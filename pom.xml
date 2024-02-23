@@ -9,7 +9,7 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>fr.pelliculum</groupId>
-    <artifactId>RestAPI</artifactId>
+    <artifactId>Pelliculum-RestAPI</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>RestAPI</name>
     <description>RestAPI</description>
