@@ -1,9 +1,5 @@
-package fr.pelliculum.restapi.controllers;
+package fr.pelliculum.restapi.authentication;
 
-import fr.pelliculum.restapi.requests.LoginRequest;
-import fr.pelliculum.restapi.requests.RegisterRequest;
-import fr.pelliculum.restapi.responses.AuthenticationResponse;
-import fr.pelliculum.restapi.services.AuthenticationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;

@@ -1,4 +1,4 @@
-package fr.pelliculum.restapi.requests;
+package fr.pelliculum.restapi.authentication;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

@@ -1,4 +1,4 @@
-package fr.pelliculum.restapi.services;
+package fr.pelliculum.restapi.configuration;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;

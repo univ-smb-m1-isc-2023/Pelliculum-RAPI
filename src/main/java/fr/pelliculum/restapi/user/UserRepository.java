@@ -1,4 +1,4 @@
-package fr.pelliculum.restapi.repositories;
+package fr.pelliculum.restapi.user;
 
 import fr.pelliculum.restapi.entities.User;
 import org.springframework.data.jpa.repository.JpaRepository;

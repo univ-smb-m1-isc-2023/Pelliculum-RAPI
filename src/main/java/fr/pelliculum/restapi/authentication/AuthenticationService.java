@@ -1,11 +1,9 @@
-package fr.pelliculum.restapi.services;
+package fr.pelliculum.restapi.authentication;
 
 import fr.pelliculum.restapi.entities.User;
 import fr.pelliculum.restapi.enums.Role;
-import fr.pelliculum.restapi.repositories.UserRepository;
-import fr.pelliculum.restapi.requests.LoginRequest;
-import fr.pelliculum.restapi.requests.RegisterRequest;
-import fr.pelliculum.restapi.responses.AuthenticationResponse;
+import fr.pelliculum.restapi.user.UserRepository;
+import fr.pelliculum.restapi.configuration.JwtService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -34,6 +32,7 @@ public class AuthenticationService {
         final String jwt = jwtService.generateToken(user);
         return AuthenticationResponse.builder()
                 .token(jwt)
+                .username(user.getUsername())
                 .build();
     }
 
@@ -45,6 +44,7 @@ public class AuthenticationService {
         final String jwt = jwtService.generateToken(user);
         return AuthenticationResponse.builder()
                 .token(jwt)
+                .username(user.getUsername())
                 .build();
     }
 
