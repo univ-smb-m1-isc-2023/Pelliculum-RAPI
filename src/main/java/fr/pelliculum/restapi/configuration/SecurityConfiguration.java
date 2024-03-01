@@ -30,6 +30,7 @@ public class SecurityConfiguration {
             .cors(cors -> cors.configurationSource(corsConfigurationSource())) // Ajout de la configuration CORS ici
             .authorizeHttpRequests(auth ->
                 auth.requestMatchers("/auth/**").permitAll()
+                    .requestMatchers("/profilePictures/**").permitAll()
                 .anyRequest().authenticated()
             )
             .sessionManagement(session ->

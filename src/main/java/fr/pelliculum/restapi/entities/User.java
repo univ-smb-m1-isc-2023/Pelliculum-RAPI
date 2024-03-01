@@ -3,6 +3,8 @@ package fr.pelliculum.restapi.entities;
 import fr.pelliculum.restapi.enums.Role;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.Type;
+import org.hibernate.type.descriptor.jdbc.BinaryJdbcType;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -17,7 +19,7 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name="users")
+@Table(name = "users")
 public class User implements UserDetails {
 
     @Id
@@ -41,6 +43,9 @@ public class User implements UserDetails {
 
     @Enumerated(EnumType.STRING)
     private Role role;
+
+    @Column(name = "profile_picture_path")
+    private String profilePicturePath;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
