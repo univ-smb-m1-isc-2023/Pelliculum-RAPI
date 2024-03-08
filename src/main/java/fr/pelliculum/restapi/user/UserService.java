@@ -78,19 +78,7 @@ public class UserService {
         assert user != null;
         return user.getFollows();
     }
-
-    /**
-     * Get followers
-     * @param username {@link String} username
-     * @return {@link List} of {@link User} followers
-     */
-    public List<User> getFollowers(String username) {
-        User user = userRepository.findByUsername(username).orElse(null);
-        assert user != null;
-        return user.getFollowers();
-    }
-
-
+    
 
 
 

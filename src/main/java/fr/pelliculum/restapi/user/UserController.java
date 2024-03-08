@@ -69,9 +69,4 @@ public class UserController {
         return ResponseEntity.ok().body(userService.getFollows(username));
     }
 
-    @GetMapping("/{username}/followers")
-    public ResponseEntity<?> getFollowers(@PathVariable String username) {
-        return ResponseEntity.ok().body(userService.getFollowers(username));
-    }
-
 }

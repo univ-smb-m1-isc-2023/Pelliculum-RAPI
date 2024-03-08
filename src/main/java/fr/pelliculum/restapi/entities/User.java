@@ -45,11 +45,9 @@ public class User implements UserDetails {
     @Enumerated(EnumType.STRING)
     private Role role;
 
+    @Column(name = "follows")
     @ManyToMany
     private List<User> follows;
-
-    @ManyToMany(mappedBy = "follows")
-    private List<User> followers;
 
     @Column(name = "profile_picture_path")
     private String profilePicturePath;
