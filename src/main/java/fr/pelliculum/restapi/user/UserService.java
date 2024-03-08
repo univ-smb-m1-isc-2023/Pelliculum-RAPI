@@ -9,6 +9,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -52,6 +53,45 @@ public class UserService {
             userRepository.save(user);
         }
     }
+
+    /**
+     * Add follow
+     * @param username {@link String} username
+     * @param followUsername {@link String} followUsername
+     */
+    public void addFollow(String username, String followUsername) {
+        User user = userRepository.findByUsername(username).orElse(null);
+        User follow = userRepository.findByUsername(followUsername).orElse(null);
+        if (user != null && follow != null) {
+            user.getFollows().add(follow);
+            userRepository.save(user);
+        }
+    }
+
+    /**
+     * Get follows
+     * @param username {@link String} username
+     * @return {@link List} of {@link User} follows
+     */
+    public List<User> getFollows(String username) {
+        User user = userRepository.findByUsername(username).orElse(null);
+        assert user != null;
+        return user.getFollows();
+    }
+
+    /**
+     * Get followers
+     * @param username {@link String} username
+     * @return {@link List} of {@link User} followers
+     */
+    public List<User> getFollowers(String username) {
+        User user = userRepository.findByUsername(username).orElse(null);
+        assert user != null;
+        return user.getFollowers();
+    }
+
+
+
 
 
 }
