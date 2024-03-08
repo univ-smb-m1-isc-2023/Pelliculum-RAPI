@@ -73,12 +73,21 @@ public class UserService {
      * @param username {@link String} username
      * @return {@link List} of {@link User} follows
      */
-    public List<User> getFollows(String username) {
-        User user = userRepository.findByUsername(username).orElse(null);
-        assert user != null;
-        return user.getFollows();
+    public List<UserDTO> getFollows(String username) {
+        return userRepository.findFollowsByUserName(username);
     }
-    
+
+    /**
+     * Get followers
+     * @param username {@link String} username
+     * @return {@link List} of {@link User} followers
+     */
+    public List<UserDTO> getFollowers(String username) {
+
+        return userRepository.findFollowersByUserName(username);
+    }
+
+
 
 
 
