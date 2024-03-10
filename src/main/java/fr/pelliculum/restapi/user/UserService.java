@@ -117,7 +117,8 @@ public class UserService {
                     (String) result[1], // firstname
                     (String) result[2], // username
                     (Long) result[3],   // followsCount
-                    (Long) result[4]    // followersCount
+                    (Long) result[4],   // followersCount
+                    (Boolean) true // isFollowedByCurrentUser
             ));
         }
         return followsDetails;
@@ -138,7 +139,8 @@ public class UserService {
                     (String) result[1], // firstname
                     (String) result[2], // username
                     ((Number) result[3]).longValue(), // followsCount, safe cast to Number then to Long
-                    ((Number) result[4]).longValue()  // followersCount
+                    ((Number) result[4]).longValue(),  // followersCount
+                    (Boolean) result[5] // isFollowedByCurrentUser
             ));
         }
         return followersDetails;

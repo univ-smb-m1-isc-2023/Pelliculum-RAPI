@@ -10,6 +10,7 @@ public class UserDTO {
     private String username;
     private Long followsCount;
     private Long followersCount;
+    private Boolean isFollowed;
     // Autres champs souhaités
 
     public UserDTO() {
@@ -23,12 +24,13 @@ public class UserDTO {
         // Initialisation d'autres champs
     }
 
-    public UserDTO(String lastname, String firstname, String username, Long followsCount, Long followersCount) {
+    public UserDTO(String lastname, String firstname, String username, Long followsCount, Long followersCount, Boolean isFollowed) {
         this.lastname = lastname;
         this.firstname = firstname;
         this.username = username;
         this.followsCount = followsCount;
         this.followersCount = followersCount;
+        this.isFollowed = isFollowed;
     }
 
 }
