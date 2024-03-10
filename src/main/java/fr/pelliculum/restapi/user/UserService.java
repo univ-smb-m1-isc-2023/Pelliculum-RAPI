@@ -108,6 +108,29 @@ public class UserService {
         return followsDetails;
     }
 
+    /**
+     * Get followers details by username
+     * @param username {@link String} username
+     * @return {@link List} of {@link UserDTO} followersDetails
+     */
+
+    public List<UserDTO> getFollowersDetailsByUsername(String username) {
+        List<Object[]> results = userRepository.findFollowersDetailsByUsernameNative(username);
+        List<UserDTO> followersDetails = new ArrayList<>();
+        for (Object[] result : results) {
+            followersDetails.add(new UserDTO(
+                    (String) result[0], // lastname
+                    (String) result[1], // firstname
+                    (String) result[2], // username
+                    ((Number) result[3]).longValue(), // followsCount, safe cast to Number then to Long
+                    ((Number) result[4]).longValue()  // followersCount
+            ));
+        }
+        return followersDetails;
+    }
+
+
+
 
 
 
