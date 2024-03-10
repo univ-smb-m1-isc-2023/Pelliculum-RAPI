@@ -6,17 +6,16 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 
 public interface UserRepository extends JpaRepository<User, Long>{
     Optional<User> findByUsername(String email);
 
     @Query("SELECT new fr.pelliculum.restapi.user.UserDTO(u.lastname, u.firstname, u.username) FROM User u JOIN u.follows f WHERE f.username = :username")
-    List<UserDTO> findFollowersByUserName(String username);
+    List<UserDTO> findFollowersByUsername(String username);
 
     @Query("SELECT new fr.pelliculum.restapi.user.UserDTO(f.lastname, f.firstname, f.username) FROM User u JOIN u.follows f WHERE u.username = :username")
-    List<UserDTO> findFollowsByUserName(String username);
+    List<UserDTO> findFollowsByUsername(String username);
 
     @Query(value = "SELECT u.lastname, u.firstname, u.username, " +
             "(SELECT COUNT(*) FROM users_follows WHERE user_id = f.follows_id) AS followsCount, " +

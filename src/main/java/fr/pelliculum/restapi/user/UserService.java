@@ -4,14 +4,9 @@ import fr.pelliculum.restapi.entities.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -47,7 +42,11 @@ public class UserService {
         return userRepository.save(existingUser);
     }
 
-    public void updateUserProfilePicture(String username, String fileName) {
+    /**
+     * Update user profile picture
+     * @param username {@link String} username
+     */
+    public void updateUserProfilePicture(String username) {
         User user = userRepository.findByUsername(username).orElse(null);
         if (user != null) {
             user.setProfilePicturePath(uploadDir + "/" + username + ".jpeg"); // Assurez-vous que cela correspond à votre logique de résolution de chemin
@@ -74,7 +73,6 @@ public class UserService {
      * @param username {@link String} username
      * @param followUsername {@link String} followUsername
      */
-
     public void removeFollow(String username, String followUsername) {
         User user = userRepository.findByUsername(username).orElse(null);
         User follow = userRepository.findByUsername(followUsername).orElse(null);
@@ -90,7 +88,7 @@ public class UserService {
      * @return {@link List} of {@link User} follows
      */
     public List<UserDTO> getFollows(String username) {
-        return userRepository.findFollowsByUserName(username);
+        return userRepository.findFollowsByUsername(username);
     }
 
     /**
@@ -99,7 +97,7 @@ public class UserService {
      * @return {@link List} of {@link User} followers
      */
     public List<UserDTO> getFollowers(String username) {
-        return userRepository.findFollowersByUserName(username);
+        return userRepository.findFollowersByUsername(username);
     }
 
     /**

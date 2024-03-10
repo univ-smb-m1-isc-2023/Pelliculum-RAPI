@@ -37,7 +37,7 @@ public class UserController {
     public ResponseEntity<?> uploadProfilePicture(@PathVariable String username, @RequestParam("file") MultipartFile file) {
         try {
             String fileName = fileStorageService.storeFile(file, username);
-            userService.updateUserProfilePicture(username, fileName); // Nous implémenterons cette méthode ensuite
+            userService.updateUserProfilePicture(username); // Nous implémenterons cette méthode ensuite
             return ResponseEntity.ok().body("Image téléchargée avec succès : " + fileName);
         } catch (IOException e) {
             return ResponseEntity.badRequest().body("Impossible de télécharger l'image : " + e.getMessage());
