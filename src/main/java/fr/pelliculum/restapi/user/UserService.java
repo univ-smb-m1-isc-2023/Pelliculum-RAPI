@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -83,8 +84,28 @@ public class UserService {
      * @return {@link List} of {@link User} followers
      */
     public List<UserDTO> getFollowers(String username) {
-
         return userRepository.findFollowersByUserName(username);
+    }
+
+    /**
+     * Get follows details by username
+     * @param username {@link String} username
+     * @return {@link List} of {@link UserDTO} followsDetails
+     */
+
+    public List<UserDTO> getFollowsDetailsByUsername(String username) {
+        List<Object[]> results = userRepository.findFollowsDetailsByUsernameNative(username);
+        List<UserDTO> followsDetails = new ArrayList<>();
+        for (Object[] result : results) {
+            followsDetails.add(new UserDTO(
+                    (String) result[0], // lastname
+                    (String) result[1], // firstname
+                    (String) result[2], // username
+                    (Long) result[3],   // followsCount
+                    (Long) result[4]    // followersCount
+            ));
+        }
+        return followsDetails;
     }
 
 

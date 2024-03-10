@@ -61,7 +61,7 @@ public class UserController {
         }
 
         userService.addFollow(username, followUsername);
-        return ResponseEntity.ok().body("Ami ajouté avec succès");
+        return ResponseEntity.ok().body("Utilisateur suivi avec succès");
     }
 
     @GetMapping("/{username}/follows")
@@ -69,9 +69,16 @@ public class UserController {
         return ResponseEntity.ok().body(userService.getFollows(username));
     }
 
+    @GetMapping("/{username}/follows-details")
+    public ResponseEntity<?> getFollowsDetails(@PathVariable String username) {
+        return ResponseEntity.ok().body(userService.getFollowsDetailsByUsername(username));
+    }
+
     @GetMapping("/{username}/followers")
     public ResponseEntity<?> getFollowers(@PathVariable String username) {
         return ResponseEntity.ok().body(userService.getFollowers(username));
     }
+
+
 
 }

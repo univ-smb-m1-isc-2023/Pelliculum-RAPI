@@ -8,8 +8,8 @@ public class UserDTO {
     private String lastname;
     private String firstname;
     private String username;
-    private Integer followsCount;
-    private Integer followersCount;
+    private Long followsCount;
+    private Long followersCount;
     // Autres champs souhaités
 
     public UserDTO() {
@@ -21,6 +21,14 @@ public class UserDTO {
         this.firstname = firstname;
         this.username = username;
         // Initialisation d'autres champs
+    }
+
+    public UserDTO(String lastname, String firstname, String username, Long followsCount, Long followersCount) {
+        this.lastname = lastname;
+        this.firstname = firstname;
+        this.username = username;
+        this.followsCount = followsCount;
+        this.followersCount = followersCount;
     }
 
 }
