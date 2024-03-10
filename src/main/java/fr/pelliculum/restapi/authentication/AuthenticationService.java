@@ -37,15 +37,19 @@ public class AuthenticationService {
     }
 
     public AuthenticationResponse login(LoginRequest request){
+        System.out.println(request.getUsername() + " " + request.getPassword());
         authenticationManager.authenticate(
             new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword())
         );
+        System.out.println("ok");
         final User user = userRepository.findByUsername(request.getUsername()).orElseThrow();
+        System.out.println(user.getUsername() + " " + user.getPassword() + " " + user.getRole());
         final String jwt = jwtService.generateToken(user);
         return AuthenticationResponse.builder()
                 .token(jwt)
                 .username(user.getUsername())
                 .build();
     }
+
 
 }
