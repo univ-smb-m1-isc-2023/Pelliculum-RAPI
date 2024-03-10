@@ -64,6 +64,18 @@ public class UserController {
         return ResponseEntity.ok().body("Utilisateur suivi avec succès");
     }
 
+    @DeleteMapping("/{username}/unfollows/{followUsername}")
+    public ResponseEntity<?> removeFollow(@PathVariable String username, @PathVariable String followUsername) {
+        User user = userService.getUserByUsername(username);
+        for (User friend : user.getFollows()) {
+            if (friend.getUsername().equals(followUsername)) {
+                userService.removeFollow(username, followUsername);
+                return ResponseEntity.ok().body("Abonnement annulé avec succès");
+            }
+        }
+        return ResponseEntity.badRequest().body("Vous ne suivez pas cet utilisateur");
+    }
+
     @GetMapping("/{username}/follows")
     public ResponseEntity<?> getFollows(@PathVariable String username) {
         return ResponseEntity.ok().body(userService.getFollows(username));

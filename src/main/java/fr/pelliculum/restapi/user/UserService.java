@@ -70,6 +70,21 @@ public class UserService {
     }
 
     /**
+     * Remove follow
+     * @param username {@link String} username
+     * @param followUsername {@link String} followUsername
+     */
+
+    public void removeFollow(String username, String followUsername) {
+        User user = userRepository.findByUsername(username).orElse(null);
+        User follow = userRepository.findByUsername(followUsername).orElse(null);
+        if (user != null && follow != null) {
+            user.getFollows().remove(follow);
+            userRepository.save(user);
+        }
+    }
+
+    /**
      * Get follows
      * @param username {@link String} username
      * @return {@link List} of {@link User} follows
