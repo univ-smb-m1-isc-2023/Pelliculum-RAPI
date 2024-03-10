@@ -11,6 +11,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 @Setter
 @Getter
@@ -41,8 +42,13 @@ public class User implements UserDetails {
     @Column(name = "password", nullable = false)
     private String password;
 
+    @Column(name = "role", nullable = false)
     @Enumerated(EnumType.STRING)
     private Role role;
+
+    @Column(name = "follows")
+    @ManyToMany
+    private List<User> follows;
 
     @Column(name = "profile_picture_path")
     private String profilePicturePath;

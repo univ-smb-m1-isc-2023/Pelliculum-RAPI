@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.stream.StreamSupport;
 
 @RestController
 @RequiredArgsConstructor
@@ -20,27 +21,52 @@ import java.nio.file.Paths;
 public class UserController {
 
     private final UserService userService;
-    private final FileStorageService fileStorageService;
 
     @GetMapping("{username}")
-    public ResponseEntity<User> getUser(@PathVariable String username) {
-        return ResponseEntity.ok(userService.getUserByUsername(username));
+    public ResponseEntity<?> getUser(@PathVariable String username) {
+        return userService.getUserByUsername(username);
     }
 
     @PutMapping("{username}")
-    public ResponseEntity<User> updateUser(@PathVariable String username, @RequestBody User user) {
-        return ResponseEntity.ok(userService.updateUser(username, user));
+    public ResponseEntity<?> updateUser(@PathVariable String username, @RequestBody User user) {
+        return userService.updateUser(username, user);
     }
 
     @PostMapping("/{username}/profile-picture")
-    public ResponseEntity<?> uploadProfilePicture(@PathVariable String username, @RequestParam("file") MultipartFile file) {
-        try {
-            String fileName = fileStorageService.storeFile(file, username);
-            userService.updateUserProfilePicture(username, fileName); // Nous implémenterons cette méthode ensuite
-            return ResponseEntity.ok().body("Image téléchargée avec succès : " + fileName);
-        } catch (IOException e) {
-            return ResponseEntity.badRequest().body("Impossible de télécharger l'image : " + e.getMessage());
-        }
+    public ResponseEntity<?> uploadProfilePicture(@PathVariable String username, @RequestParam("file") MultipartFile file) throws IOException {
+        return userService.updateUserProfilePicture(username, file);
     }
+
+    @PostMapping("/{username}/follows/{followUsername}")
+    public ResponseEntity<?> addFollow(@PathVariable String username, @PathVariable String followUsername) {
+        return userService.addFollow(username, followUsername);
+    }
+
+    @DeleteMapping("/{username}/unfollows/{followUsername}")
+    public ResponseEntity<?> removeFollow(@PathVariable String username, @PathVariable String followUsername) {
+        return userService.removeFollow(username, followUsername);
+    }
+
+    @GetMapping("/{username}/follows")
+    public ResponseEntity<?> getFollows(@PathVariable String username) {
+        return userService.getFollows(username);
+    }
+
+    @GetMapping("/{username}/follows-details")
+    public ResponseEntity<?> getFollowsDetails(@PathVariable String username) {
+        return userService.getFollowsDetailsByUsername(username);
+    }
+
+    @GetMapping("/{username}/followers")
+    public ResponseEntity<?> getFollowers(@PathVariable String username) {
+        return userService.getFollowers(username);
+    }
+
+    @GetMapping("/{username}/followers-details")
+    public ResponseEntity<?> getFollowersDetails(@PathVariable String username) {
+        return userService.getFollowersDetailsByUsername(username);
+    }
+
+
 
 }

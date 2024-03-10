@@ -2,11 +2,15 @@ package fr.pelliculum.restapi.authentication;
 
 import fr.pelliculum.restapi.entities.User;
 import fr.pelliculum.restapi.enums.Role;
+import fr.pelliculum.restapi.configuration.exceptions.UserNotFoundException;
+import fr.pelliculum.restapi.configuration.handlers.Response;
 import fr.pelliculum.restapi.user.UserRepository;
 import fr.pelliculum.restapi.configuration.JwtService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -19,7 +23,27 @@ public class AuthenticationService {
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
 
-    public AuthenticationResponse register(RegisterRequest request){
+    /**
+     * Get an user by username or throw an exception (404)
+     * @param username {@link String} username
+     * @return {@link User} user
+     */
+    public User findByUsernameOrNotFound(String username) {
+        return userRepository.findByUsername(username)
+                .orElseThrow(() -> new UserNotFoundException("User not found with username: " + username));
+    }
+
+    /**
+     * Register a new user
+     * @param request {@link RegisterRequest} request
+     * @return {@link ResponseEntity} response
+     */
+    public ResponseEntity<?> register(RegisterRequest request){
+
+        if(userRepository.findByUsername(request.getUsername()).isPresent()){
+            return Response.conflict("Username is already taken !");
+        }
+
         final User user = User.builder()
                 .firstname(request.getFirstname())
                 .lastname(request.getLastname())
@@ -28,28 +52,26 @@ public class AuthenticationService {
                 .role(Role.USER)
                 .username(request.getUsername())
                 .build();
+
         userRepository.save(user);
         final String jwt = jwtService.generateToken(user);
-        return AuthenticationResponse.builder()
-                .token(jwt)
-                .username(user.getUsername())
-                .build();
+        return Response.ok("User successfully registered !", new AuthenticationResponse(jwt, user.getUsername()));
     }
 
-    public AuthenticationResponse login(LoginRequest request){
-        System.out.println(request.getUsername() + " " + request.getPassword());
-        authenticationManager.authenticate(
-            new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword())
-        );
-        System.out.println("ok");
-        final User user = userRepository.findByUsername(request.getUsername()).orElseThrow();
-        System.out.println(user.getUsername() + " " + user.getPassword() + " " + user.getRole());
-        final String jwt = jwtService.generateToken(user);
-        return AuthenticationResponse.builder()
-                .token(jwt)
-                .username(user.getUsername())
-                .build();
+    /**
+     * Login a user and generate a token
+     * @param request {@link LoginRequest} request
+     * @return {@link AuthenticationResponse} response
+     */
+    public ResponseEntity<?> login(LoginRequest request){
+        try {
+            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword()));
+            final User user = findByUsernameOrNotFound(request.getUsername());
+            final String jwt = jwtService.generateToken(user);
+            return Response.ok("User successfully logged in !", new AuthenticationResponse(jwt, user.getUsername()));
+        } catch (AuthenticationException e) {
+            return Response.error("Mot de passe ou nom d'utilisateur incorrect !");
+        }
     }
-
 
 }
