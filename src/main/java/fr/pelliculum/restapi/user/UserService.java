@@ -1,10 +1,15 @@
 package fr.pelliculum.restapi.user;
 
 import fr.pelliculum.restapi.entities.User;
+import fr.pelliculum.restapi.configuration.exceptions.UserNotFoundException;
+import fr.pelliculum.restapi.configuration.handlers.Response;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,70 +21,94 @@ public class UserService {
     private String uploadDir;
 
     private final UserRepository userRepository;
+    private final FileStorageService fileStorageService;
+
+
+    /**
+     * Get an user by username or throw an exception (404)
+     * @param username {@link String} username
+     * @return {@link User} user
+     */
+    public User findByUsernameOrNotFound(String username) {
+        return userRepository.findByUsername(username)
+                .orElseThrow(() -> new UserNotFoundException("User not found with username: " + username));
+    }
 
     /**
      * Get a user by username
      * @param username {@link String} username
      * @return {@link User} user
      */
-    public User getUserByUsername(String username) {
-        return userRepository.findByUsername(username).orElse(null);
+    public ResponseEntity<Object> getUserByUsername(String username) {
+        return Response.ok("User successfully founded !", findByUsernameOrNotFound(username));
     }
 
     /**
      * Update user
      * @param username {@link String} username
-     * @param user {@link User} user
+     * @param values   {@link User} new values
      * @return {@link User} user
      */
-    public User updateUser(String username, User user) {
-        User existingUser = userRepository.findByUsername(username).orElse(null);
-        assert existingUser != null;
-        existingUser.setFirstname(user.getFirstname());
-        existingUser.setLastname(user.getLastname());
-        existingUser.setEmail(user.getEmail());
-        existingUser.setUsername(user.getUsername());
-        return userRepository.save(existingUser);
+    public ResponseEntity<Object> updateUser(String username, User values) {
+        User user = findByUsernameOrNotFound(username);
+        user.setFirstname(values.getFirstname());
+        user.setLastname(values.getLastname());
+        user.setEmail(values.getEmail());
+        user.setUsername(values.getUsername());
+        userRepository.save(user);
+        return Response.ok("User successfully updated !");
     }
+
 
     /**
      * Update user profile picture
      * @param username {@link String} username
      */
-    public void updateUserProfilePicture(String username) {
-        User user = userRepository.findByUsername(username).orElse(null);
-        if (user != null) {
+    public ResponseEntity<Object> updateUserProfilePicture(String username, MultipartFile file) throws IOException {
+        try {
+            User user = findByUsernameOrNotFound(username);
+            fileStorageService.storeFile(file, username);
             user.setProfilePicturePath(uploadDir + "/" + username + ".jpeg"); // Assurez-vous que cela correspond à votre logique de résolution de chemin
             userRepository.save(user);
+            return Response.ok("Profile picture successfully updated !", user);
+        } catch (IOException e) {
+            return Response.error("Error while updating profile picture : " + e.getMessage());
         }
     }
 
+
+
     /**
      * Add follow
-     * @param username {@link String} username
+     * @param username       {@link String} username
      * @param followUsername {@link String} followUsername
      */
-    public void addFollow(String username, String followUsername) {
-        User user = userRepository.findByUsername(username).orElse(null);
-        User follow = userRepository.findByUsername(followUsername).orElse(null);
-        if (user != null && follow != null) {
-            user.getFollows().add(follow);
-            userRepository.save(user);
+    public ResponseEntity<Object> addFollow(String username, String followUsername) {
+        User user = findByUsernameOrNotFound(username);
+        User follow = findByUsernameOrNotFound(followUsername);
+        if (user.getFollows().contains(follow)) {
+            return Response.error("Vous suivez déjà cet utilisateur !");
         }
+        if (username.equals(followUsername)) {
+            return Response.error("Vous ne pouvez pas suivre vous même !");
+        }
+        user.getFollows().add(follow);
+        return Response.ok("Vous suivez maintenant " + followUsername + " !", userRepository.save(user));
     }
 
     /**
      * Remove follow
-     * @param username {@link String} username
+     * @param username       {@link String} username
      * @param followUsername {@link String} followUsername
      */
-    public void removeFollow(String username, String followUsername) {
-        User user = userRepository.findByUsername(username).orElse(null);
-        User follow = userRepository.findByUsername(followUsername).orElse(null);
-        if (user != null && follow != null) {
-            user.getFollows().remove(follow);
-            userRepository.save(user);
+    public ResponseEntity<Object> removeFollow(String username, String followUsername) {
+        User user = findByUsernameOrNotFound(username);
+        User follow = findByUsernameOrNotFound(followUsername);
+        if (!user.getFollows().contains(follow)) {
+            return Response.error("Vous ne suivez pas cet utilisateur !");
         }
+        user.getFollows().remove(follow);
+        return Response.ok("Vous ne suivez plus " + followUsername + " !", userRepository.save(user));
     }
 
     /**
@@ -87,8 +116,8 @@ public class UserService {
      * @param username {@link String} username
      * @return {@link List} of {@link User} follows
      */
-    public List<UserDTO> getFollows(String username) {
-        return userRepository.findFollowsByUsername(username);
+    public ResponseEntity<Object> getFollows(String username) {
+        return Response.ok("Follows successfully founded !", userRepository.findFollowsByUsername(username));
     }
 
     /**
@@ -96,8 +125,8 @@ public class UserService {
      * @param username {@link String} username
      * @return {@link List} of {@link User} followers
      */
-    public List<UserDTO> getFollowers(String username) {
-        return userRepository.findFollowersByUsername(username);
+    public ResponseEntity<Object> getFollowers(String username) {
+        return Response.ok("Followers successfully founded !", userRepository.findFollowersByUsername(username));
     }
 
     /**
@@ -106,7 +135,7 @@ public class UserService {
      * @return {@link List} of {@link UserDTO} followsDetails
      */
 
-    public List<UserDTO> getFollowsDetailsByUsername(String username) {
+    public ResponseEntity<Object> getFollowsDetailsByUsername(String username) {
         List<Object[]> results = userRepository.findFollowsDetailsByUsernameNative(username);
         List<UserDTO> followsDetails = new ArrayList<>();
         for (Object[] result : results) {
@@ -119,7 +148,7 @@ public class UserService {
                     (Boolean) true // isFollowedByCurrentUser
             ));
         }
-        return followsDetails;
+        return Response.ok("Follows details successfully founded !", followsDetails);
     }
 
     /**
@@ -128,7 +157,7 @@ public class UserService {
      * @return {@link List} of {@link UserDTO} followersDetails
      */
 
-    public List<UserDTO> getFollowersDetailsByUsername(String username) {
+    public ResponseEntity<Object> getFollowersDetailsByUsername(String username) {
         List<Object[]> results = userRepository.findFollowersDetailsByUsernameNative(username);
         List<UserDTO> followersDetails = new ArrayList<>();
         for (Object[] result : results) {
@@ -141,13 +170,8 @@ public class UserService {
                     (Boolean) result[5] // isFollowedByCurrentUser
             ));
         }
-        return followersDetails;
+        return Response.ok("Followers details successfully founded !", followersDetails);
     }
-
-
-
-
-
 
 
 }

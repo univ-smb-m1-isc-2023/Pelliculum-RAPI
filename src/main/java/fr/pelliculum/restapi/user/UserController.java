@@ -21,79 +21,50 @@ import java.util.stream.StreamSupport;
 public class UserController {
 
     private final UserService userService;
-    private final FileStorageService fileStorageService;
 
     @GetMapping("{username}")
-    public ResponseEntity<User> getUser(@PathVariable String username) {
-        return ResponseEntity.ok(userService.getUserByUsername(username));
+    public ResponseEntity<?> getUser(@PathVariable String username) {
+        return userService.getUserByUsername(username);
     }
 
     @PutMapping("{username}")
-    public ResponseEntity<User> updateUser(@PathVariable String username, @RequestBody User user) {
-        return ResponseEntity.ok(userService.updateUser(username, user));
+    public ResponseEntity<?> updateUser(@PathVariable String username, @RequestBody User user) {
+        return userService.updateUser(username, user);
     }
 
     @PostMapping("/{username}/profile-picture")
-    public ResponseEntity<?> uploadProfilePicture(@PathVariable String username, @RequestParam("file") MultipartFile file) {
-        try {
-            String fileName = fileStorageService.storeFile(file, username);
-            userService.updateUserProfilePicture(username); // Nous implémenterons cette méthode ensuite
-            return ResponseEntity.ok().body("Image téléchargée avec succès : " + fileName);
-        } catch (IOException e) {
-            return ResponseEntity.badRequest().body("Impossible de télécharger l'image : " + e.getMessage());
-        }
+    public ResponseEntity<?> uploadProfilePicture(@PathVariable String username, @RequestParam("file") MultipartFile file) throws IOException {
+        return userService.updateUserProfilePicture(username, file);
     }
 
     @PostMapping("/{username}/follows/{followUsername}")
     public ResponseEntity<?> addFollow(@PathVariable String username, @PathVariable String followUsername) {
-        User user = userService.getUserByUsername(username);
-        for (User friend : user.getFollows()) {
-            if (friend.getUsername().equals(followUsername)) {
-                return ResponseEntity.badRequest().body("Vous suivez déjà cet utilisateur");
-            }
-        }
-
-        if (username.equals(followUsername)) {
-            return ResponseEntity.badRequest().body("Vous ne pouvez pas vous suivre vous-même");
-        }
-        if (userService.getUserByUsername(username) == null || userService.getUserByUsername(followUsername) == null) {
-            return ResponseEntity.badRequest().body("L'utilisateur n'existe pas");
-        }
-
-        userService.addFollow(username, followUsername);
-        return ResponseEntity.ok().body("Utilisateur suivi avec succès");
+        return userService.addFollow(username, followUsername);
     }
 
     @DeleteMapping("/{username}/unfollows/{followUsername}")
     public ResponseEntity<?> removeFollow(@PathVariable String username, @PathVariable String followUsername) {
-        User user = userService.getUserByUsername(username);
-        for (User friend : user.getFollows()) {
-            if (friend.getUsername().equals(followUsername)) {
-                userService.removeFollow(username, followUsername);
-                return ResponseEntity.ok().body("Abonnement annulé avec succès");
-            }
-        }
-        return ResponseEntity.badRequest().body("Vous ne suivez pas cet utilisateur");
+        return userService.removeFollow(username, followUsername);
     }
 
     @GetMapping("/{username}/follows")
     public ResponseEntity<?> getFollows(@PathVariable String username) {
-        return ResponseEntity.ok().body(userService.getFollows(username));
+        return userService.getFollows(username);
     }
 
     @GetMapping("/{username}/follows-details")
     public ResponseEntity<?> getFollowsDetails(@PathVariable String username) {
-        return ResponseEntity.ok().body(userService.getFollowsDetailsByUsername(username));
+        return userService.getFollowsDetailsByUsername(username);
     }
 
     @GetMapping("/{username}/followers")
     public ResponseEntity<?> getFollowers(@PathVariable String username) {
-        return ResponseEntity.ok().body(userService.getFollowers(username));
+        return userService.getFollowers(username);
     }
 
     @GetMapping("/{username}/followers-details")
     public ResponseEntity<?> getFollowersDetails(@PathVariable String username) {
-        return ResponseEntity.ok().body(userService.getFollowersDetailsByUsername(username));
+        return userService.getFollowersDetailsByUsername(username);
     }
 
 
