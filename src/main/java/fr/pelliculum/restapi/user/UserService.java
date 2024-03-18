@@ -1,5 +1,6 @@
 package fr.pelliculum.restapi.user;
 
+import fr.pelliculum.restapi.entities.Movie;
 import fr.pelliculum.restapi.entities.User;
 import fr.pelliculum.restapi.configuration.exceptions.UserNotFoundException;
 import fr.pelliculum.restapi.configuration.handlers.Response;
@@ -156,7 +157,6 @@ public class UserService {
      * @param username {@link String} username
      * @return {@link List} of {@link UserDTO} followersDetails
      */
-
     public ResponseEntity<Object> getFollowersDetailsByUsername(String username) {
         List<Object[]> results = userRepository.findFollowersDetailsByUsernameNative(username);
         List<UserDTO> followersDetails = new ArrayList<>();
@@ -171,6 +171,37 @@ public class UserService {
             ));
         }
         return Response.ok("Followers details successfully founded !", followersDetails);
+    }
+
+    /**
+     * Get watchlist by username
+     * @param username {@link String} username
+     * @return {@link List} of {@link Movie} watchlist
+     */
+    public ResponseEntity<Object> getWatchlist(String username) {
+        return Response.ok("Watchlist successfully founded !", findByUsernameOrNotFound(username).getWatchlist());
+    }
+
+    /**
+     * Add movie to watchlist
+     * @param username {@link String} username
+     * @param movieId {@link Long} movieId
+     */
+    public ResponseEntity<Object> addMovieToWatchlist(String username, Long movieId) {
+        User user = findByUsernameOrNotFound(username);
+        user.getWatchlist().add(movieId);
+        return Response.ok("Le film a bien été ajouté à votre watchlist", userRepository.save(user));
+    }
+
+    /**
+     * Remove movie from watchlist
+     * @param username {@link String} username
+     * @param movieId {@link Long} movieId
+     */
+    public ResponseEntity<Object> removeMovieFromWatchlist(String username, Long movieId) {
+        User user = findByUsernameOrNotFound(username);
+        user.getWatchlist().remove(movieId);
+        return Response.ok("Le film a bien été retiré de votre watchlist", userRepository.save(user));
     }
 
 
