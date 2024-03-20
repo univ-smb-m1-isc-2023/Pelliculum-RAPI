@@ -93,7 +93,20 @@ public class UserService {
             return Response.error("Vous ne pouvez pas suivre vous même !");
         }
         user.getFollows().add(follow);
-        return Response.ok("Vous suivez maintenant " + followUsername + " !", userRepository.save(user));
+        userRepository.save(user);
+
+
+        List<Object[]> network = userRepository.findFollowingAndFollowersByUsername(followUsername);
+        UserDTO followUserDTO = new UserDTO(
+                follow.getLastname(),
+                follow.getFirstname(),
+                follow.getUsername(),
+                ((Number) network.get(0)[0]).longValue(), // followsCount, safe cast to Number then to Long
+                ((Number) network.get(0)[1]).longValue(), // followersCount
+                true // isFollowedByCurrentUser
+        );
+
+        return Response.ok("Vous suivez maintenant " + followUsername + " !", followUserDTO);
     }
 
     /**
@@ -145,7 +158,7 @@ public class UserService {
                     (String) result[2], // username
                     (Long) result[3],   // followsCount
                     (Long) result[4],   // followersCount
-                    (Boolean) true // isFollowedByCurrentUser
+                    true // isFollowedByCurrentUser
             ));
         }
         return Response.ok("Follows details successfully founded !", followsDetails);

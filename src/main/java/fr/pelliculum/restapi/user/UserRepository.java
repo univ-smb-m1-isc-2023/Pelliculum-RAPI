@@ -36,7 +36,13 @@ public interface UserRepository extends JpaRepository<User, Long>{
             nativeQuery = true)
     List<Object[]> findFollowersDetailsByUsernameNative(@Param("username") String username);
 
-
+    @Query(value = "SELECT " +
+            "(SELECT COUNT(*) FROM users_follows WHERE user_id = u.id) AS followingCount, " +
+            "(SELECT COUNT(*) FROM users_follows WHERE follows_id = u.id) AS followersCount " +
+            "FROM users u " +
+            "WHERE u.username = :username",
+            nativeQuery = true)
+    List<Object[]> findFollowingAndFollowersByUsername(@Param("username") String username);
 
     Boolean existsByEmail(String email);
 }
