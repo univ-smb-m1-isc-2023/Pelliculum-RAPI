@@ -28,6 +28,11 @@ public class ReviewController {
         return reviewService.getReviewsByMovieId(movieId);
     }
 
+    @GetMapping("user/{username}")
+    public ResponseEntity<?> getReviewsByUsername(@PathVariable String username) {
+        return reviewService.getReviewsByUsername(username);
+    }
+
 
 
 }

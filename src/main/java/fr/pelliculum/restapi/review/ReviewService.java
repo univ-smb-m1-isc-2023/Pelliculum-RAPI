@@ -26,5 +26,15 @@ public class ReviewService {
         return Response.ok("Reviews for movieId: " + movieId, reviews);
     }
 
+    /**
+     * Get all reviews for a user
+     * @param username {@link String} username
+     * @return {@link List<Review>} reviews
+     */
+    public ResponseEntity<Object> getReviewsByUsername(String username) {
+        List<ReviewDTO> reviews = reviewRepository.findReviewDTOsByUsername(username);
+        return Response.ok("Reviews for username: " + username, reviews);
+    }
+
 
 }
