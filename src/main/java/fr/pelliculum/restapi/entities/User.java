@@ -50,6 +50,10 @@ public class User implements UserDetails {
     @ManyToMany
     private List<User> follows;
 
+    @Column(name = "reviews")
+    @ManyToMany
+    private List<Review> reviews;
+
     @Column(name = "profile_picture_path")
     private String profilePicturePath;
 

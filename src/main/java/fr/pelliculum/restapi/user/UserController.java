@@ -1,5 +1,6 @@
 package fr.pelliculum.restapi.user;
 
+import fr.pelliculum.restapi.entities.Review;
 import fr.pelliculum.restapi.entities.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.Resource;
@@ -65,6 +66,11 @@ public class UserController {
     @GetMapping("/{username}/followers-details")
     public ResponseEntity<?> getFollowersDetails(@PathVariable String username) {
         return userService.getFollowersDetailsByUsername(username);
+    }
+
+    @PostMapping("/{username}/reviews")
+    public void addReviewToUser(@PathVariable String username, @RequestBody Review review) {
+        userService.addReviewToUser(username, review);
     }
 
 

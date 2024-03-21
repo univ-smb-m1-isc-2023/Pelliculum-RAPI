@@ -1,12 +1,16 @@
 package fr.pelliculum.restapi.user;
 
+import fr.pelliculum.restapi.entities.Review;
 import fr.pelliculum.restapi.entities.User;
 import fr.pelliculum.restapi.configuration.exceptions.UserNotFoundException;
 import fr.pelliculum.restapi.configuration.handlers.Response;
+import fr.pelliculum.restapi.review.ReviewRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -21,6 +25,7 @@ public class UserService {
     private String uploadDir;
 
     private final UserRepository userRepository;
+    private final ReviewRepository reviewRepository;
     private final FileStorageService fileStorageService;
 
 
@@ -184,6 +189,13 @@ public class UserService {
             ));
         }
         return Response.ok("Followers details successfully founded !", followersDetails);
+    }
+
+    @Transactional
+    public void addReviewToUser(String username, Review review) {
+        User user = userRepository.findByUsername(username).orElseThrow(() -> new UserNotFoundException("User not found with username: " + username));
+        review.setUser(user);
+        reviewRepository.save(review);
     }
 
 
