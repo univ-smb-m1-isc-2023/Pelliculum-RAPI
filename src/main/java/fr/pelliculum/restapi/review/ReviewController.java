@@ -32,7 +32,5 @@ public class ReviewController {
     public ResponseEntity<?> getReviewsByUsername(@PathVariable String username) {
         return reviewService.getReviewsByUsername(username);
     }
-
-
-
+    
 }
