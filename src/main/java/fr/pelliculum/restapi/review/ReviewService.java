@@ -1,8 +1,10 @@
 package fr.pelliculum.restapi.review;
 
 
+import fr.pelliculum.restapi.configuration.handlers.Response;
 import fr.pelliculum.restapi.entities.Review;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -19,8 +21,9 @@ public class ReviewService {
      * @return {@link List<Review>} reviews
      */
 
-    public List<ReviewDTO> getReviewsByMovieId(Long movieId) {
-        return reviewRepository.findReviewDTOsByMovieId(movieId);
+    public ResponseEntity<Object> getReviewsByMovieId(Long movieId) {
+        List<ReviewDTO> reviews = reviewRepository.findReviewDTOsByMovieId(movieId);
+        return Response.ok("Reviews for movieId: " + movieId, reviews);
     }
 
 

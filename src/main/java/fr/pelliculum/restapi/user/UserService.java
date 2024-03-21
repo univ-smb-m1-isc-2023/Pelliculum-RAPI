@@ -192,10 +192,16 @@ public class UserService {
     }
 
     @Transactional
-    public void addReviewToUser(String username, Review review) {
-        User user = userRepository.findByUsername(username).orElseThrow(() -> new UserNotFoundException("User not found with username: " + username));
+    public ResponseEntity<Object> addReviewToUser(String username, Review review) {
+        User user = findByUsernameOrNotFound(username);
+
+        if (reviewRepository.existsByUser_IdAndMovieId(user.getId(), review.getMovieId())) {
+            return Response.error("Vous avez déjà ajouté une critique pour ce film !");
+        }
+
         review.setUser(user);
         reviewRepository.save(review);
+        return Response.ok("Review successfully added !", review);
     }
 
 

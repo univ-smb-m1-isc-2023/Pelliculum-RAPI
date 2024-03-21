@@ -69,8 +69,8 @@ public class UserController {
     }
 
     @PostMapping("/{username}/reviews")
-    public void addReviewToUser(@PathVariable String username, @RequestBody Review review) {
-        userService.addReviewToUser(username, review);
+    public ResponseEntity<?> addReviewToUser(@PathVariable String username, @RequestBody Review review) {
+        return userService.addReviewToUser(username, review);
     }
 
 
