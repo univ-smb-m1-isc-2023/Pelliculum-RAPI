@@ -26,6 +26,8 @@ public class Review {
 
     private String comment;
     private Long rating;
+
+    @Column(name = "movie_id")
     private Long movieId;
 
     @ManyToOne(fetch = FetchType.LAZY)

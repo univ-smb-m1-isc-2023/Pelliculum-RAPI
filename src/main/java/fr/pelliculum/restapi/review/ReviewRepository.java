@@ -2,10 +2,14 @@ package fr.pelliculum.restapi.review;
 
 import fr.pelliculum.restapi.entities.Review;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+
+import java.util.List;
 
 public interface ReviewRepository extends JpaRepository<Review, Long> {
 
-
+    @Query("SELECT new fr.pelliculum.restapi.review.ReviewDTO(r.id, r.comment, r.rating, r.movieId, r.user, r.createdAt) FROM Review r WHERE r.movieId = :movieId")
+    List<ReviewDTO> findReviewDTOsByMovieId(Long movieId);
 
 
 }

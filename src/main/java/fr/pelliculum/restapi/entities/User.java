@@ -1,5 +1,7 @@
 package fr.pelliculum.restapi.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import fr.pelliculum.restapi.enums.Role;
 import jakarta.persistence.*;
 import lombok.*;
@@ -23,6 +25,7 @@ import java.util.Set;
 @Table(name = "users")
 public class User implements UserDetails {
 
+    @JsonIgnore
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
@@ -39,6 +42,7 @@ public class User implements UserDetails {
     @Column(name = "email", nullable = false, unique = true)
     private String email;
 
+    @JsonIgnore
     @Column(name = "password", nullable = false)
     private String password;
 
@@ -46,10 +50,12 @@ public class User implements UserDetails {
     @Enumerated(EnumType.STRING)
     private Role role;
 
+    @JsonIgnore
     @Column(name = "follows")
     @ManyToMany
     private List<User> follows;
 
+    @JsonIgnore
     @Column(name = "reviews")
     @ManyToMany
     private List<Review> reviews;
