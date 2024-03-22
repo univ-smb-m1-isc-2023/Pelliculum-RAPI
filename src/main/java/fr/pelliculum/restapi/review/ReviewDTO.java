@@ -1,5 +1,6 @@
 package fr.pelliculum.restapi.review;
 
+import fr.pelliculum.restapi.entities.Review;
 import fr.pelliculum.restapi.entities.User;
 import fr.pelliculum.restapi.user.UserDTO;
 import lombok.AllArgsConstructor;
@@ -27,6 +28,14 @@ public class ReviewDTO {
         this.movieId = movieId;
         this.user = user;
         this.createdAt = createdAt;
+    }
+
+    public ReviewDTO(Review review) {
+        this.comment = review.getComment();
+        this.rating = review.getRating();
+        this.movieId = review.getMovieId();
+        this.createdAt = review.getCreatedAt();
+        this.id = review.getId();
     }
 
 }

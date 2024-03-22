@@ -32,5 +32,15 @@ public class ReviewController {
     public ResponseEntity<?> getReviewsByUsername(@PathVariable String username) {
         return reviewService.getReviewsByUsername(username);
     }
+
+    @PutMapping("{reviewId}")
+    public ResponseEntity<?> updateReview(@PathVariable Long reviewId, @RequestBody Review review) {
+        return reviewService.updateReview(reviewId, review);
+    }
+
+    @DeleteMapping("{reviewId}")
+    public ResponseEntity<?> deleteReview(@PathVariable Long reviewId) {
+        return reviewService.deleteReview(reviewId);
+    }
     
 }

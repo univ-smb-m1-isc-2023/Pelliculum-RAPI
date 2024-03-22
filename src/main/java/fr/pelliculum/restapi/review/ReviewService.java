@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -36,5 +37,41 @@ public class ReviewService {
         return Response.ok("Reviews for username: " + username, reviews);
     }
 
+    /**
+     * Update a review
+     * @param reviewId {@link Long} reviewId
+     * @param review {@link Review} review
+     * @return {@link Review} review
+     */
+    public ResponseEntity<Object> updateReview(Long reviewId, Review review) {
+        Optional<Review> reviewOpt = reviewRepository.findById(reviewId);
 
+        if (reviewOpt.isEmpty()) {
+            return Response.error("Review not found !");
+        }
+
+        Review reviewToUpdate = reviewOpt.get();
+        reviewToUpdate.setRating(review.getRating());
+        reviewToUpdate.setComment(review.getComment());
+        reviewRepository.save(reviewToUpdate);
+        ReviewDTO reviewDTO = new ReviewDTO(reviewToUpdate);
+        return Response.ok("Review successfully updated !", reviewDTO);
+
+    }
+
+    /**
+     * Delete a review
+     * @param reviewId {@link Long} reviewId
+     * @return {@link Review} review
+     */
+    public ResponseEntity<Object> deleteReview(Long reviewId) {
+        Optional<Review> reviewOpt = reviewRepository.findById(reviewId);
+
+        if (reviewOpt.isEmpty()) {
+            return Response.error("Review not found !");
+        }
+
+        reviewRepository.deleteById(reviewId);
+        return Response.ok("Review successfully deleted !");
+    }
 }
