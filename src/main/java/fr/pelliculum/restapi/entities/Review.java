@@ -27,6 +27,8 @@ public class Review {
     private String comment;
     private Long rating;
 
+    private boolean spoiler;
+
     @Column(name = "movie_id")
     private Long movieId;
 

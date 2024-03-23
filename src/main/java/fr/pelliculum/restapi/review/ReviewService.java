@@ -53,6 +53,7 @@ public class ReviewService {
         Review reviewToUpdate = reviewOpt.get();
         reviewToUpdate.setRating(review.getRating());
         reviewToUpdate.setComment(review.getComment());
+        reviewToUpdate.setSpoiler(review.isSpoiler());
         reviewRepository.save(reviewToUpdate);
         ReviewDTO reviewDTO = new ReviewDTO(reviewToUpdate);
         return Response.ok("Review successfully updated !", reviewDTO);

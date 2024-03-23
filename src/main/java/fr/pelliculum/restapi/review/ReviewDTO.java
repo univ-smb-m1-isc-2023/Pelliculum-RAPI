@@ -20,14 +20,16 @@ public class ReviewDTO {
     private Long movieId;
     private User user;
     private Timestamp createdAt;
+    private Boolean spoiler;
 
-    public ReviewDTO(Long id, String comment, Long rating, Long movieId, User user, Timestamp createdAt) {
+    public ReviewDTO(Long id, String comment, Long rating, Long movieId, User user, Timestamp createdAt, Boolean spoiler) {
         this.id = id;
         this.comment = comment;
         this.rating = rating;
         this.movieId = movieId;
         this.user = user;
         this.createdAt = createdAt;
+        this.spoiler = spoiler;
     }
 
     public ReviewDTO(Review review) {
@@ -36,6 +38,7 @@ public class ReviewDTO {
         this.movieId = review.getMovieId();
         this.createdAt = review.getCreatedAt();
         this.id = review.getId();
+        this.spoiler = review.isSpoiler();
     }
 
 }
