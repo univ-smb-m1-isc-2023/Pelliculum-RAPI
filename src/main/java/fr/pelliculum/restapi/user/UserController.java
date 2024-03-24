@@ -1,5 +1,6 @@
 package fr.pelliculum.restapi.user;
 
+import fr.pelliculum.restapi.entities.Review;
 import fr.pelliculum.restapi.entities.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.Resource;
@@ -82,6 +83,10 @@ public class UserController {
         return userService.removeMovieFromWatchlist(username, movieId);
     }
 
+    @PostMapping("/{username}/reviews")
+    public ResponseEntity<?> addReviewToUser(@PathVariable String username, @RequestBody Review review) {
+        return userService.addReviewToUser(username, review);
+    }
 
 
 }

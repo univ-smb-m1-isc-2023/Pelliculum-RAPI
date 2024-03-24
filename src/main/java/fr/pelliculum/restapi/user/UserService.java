@@ -1,13 +1,17 @@
 package fr.pelliculum.restapi.user;
 
-import fr.pelliculum.restapi.entities.Movie;
-import fr.pelliculum.restapi.entities.User;
+
 import fr.pelliculum.restapi.configuration.exceptions.UserNotFoundException;
 import fr.pelliculum.restapi.configuration.handlers.Response;
+import fr.pelliculum.restapi.entities.Movie;
+import fr.pelliculum.restapi.entities.Review;
+import fr.pelliculum.restapi.entities.User;
+import fr.pelliculum.restapi.review.ReviewRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -22,11 +26,13 @@ public class UserService {
     private String uploadDir;
 
     private final UserRepository userRepository;
+    private final ReviewRepository reviewRepository;
     private final FileStorageService fileStorageService;
 
 
     /**
      * Get an user by username or throw an exception (404)
+     *
      * @param username {@link String} username
      * @return {@link User} user
      */
@@ -37,6 +43,7 @@ public class UserService {
 
     /**
      * Get a user by username
+     *
      * @param username {@link String} username
      * @return {@link User} user
      */
@@ -46,6 +53,7 @@ public class UserService {
 
     /**
      * Update user
+     *
      * @param username {@link String} username
      * @param values   {@link User} new values
      * @return {@link User} user
@@ -63,6 +71,7 @@ public class UserService {
 
     /**
      * Update user profile picture
+     *
      * @param username {@link String} username
      */
     public ResponseEntity<Object> updateUserProfilePicture(String username, MultipartFile file) throws IOException {
@@ -78,9 +87,9 @@ public class UserService {
     }
 
 
-
     /**
      * Add follow
+     *
      * @param username       {@link String} username
      * @param followUsername {@link String} followUsername
      */
@@ -112,6 +121,7 @@ public class UserService {
 
     /**
      * Remove follow
+     *
      * @param username       {@link String} username
      * @param followUsername {@link String} followUsername
      */
@@ -127,6 +137,7 @@ public class UserService {
 
     /**
      * Get follows
+     *
      * @param username {@link String} username
      * @return {@link List} of {@link User} follows
      */
@@ -136,6 +147,7 @@ public class UserService {
 
     /**
      * Get followers
+     *
      * @param username {@link String} username
      * @return {@link List} of {@link User} followers
      */
@@ -145,6 +157,7 @@ public class UserService {
 
     /**
      * Get follows details by username
+     *
      * @param username {@link String} username
      * @return {@link List} of {@link UserDTO} followsDetails
      */
@@ -167,6 +180,7 @@ public class UserService {
 
     /**
      * Get followers details by username
+     *
      * @param username {@link String} username
      * @return {@link List} of {@link UserDTO} followersDetails
      */
@@ -186,8 +200,10 @@ public class UserService {
         return Response.ok("Followers details successfully founded !", followersDetails);
     }
 
+
     /**
      * Get watchlist by username
+     *
      * @param username {@link String} username
      * @return {@link List} of {@link Movie} watchlist
      */
@@ -197,8 +213,9 @@ public class UserService {
 
     /**
      * Add movie to watchlist
+     *
      * @param username {@link String} username
-     * @param movieId {@link Long} movieId
+     * @param movieId  {@link Long} movieId
      */
     public ResponseEntity<Object> addMovieToWatchlist(String username, Long movieId) {
         User user = findByUsernameOrNotFound(username);
@@ -208,13 +225,27 @@ public class UserService {
 
     /**
      * Remove movie from watchlist
+     *
      * @param username {@link String} username
-     * @param movieId {@link Long} movieId
+     * @param movieId  {@link Long} movieId
      */
     public ResponseEntity<Object> removeMovieFromWatchlist(String username, Long movieId) {
         User user = findByUsernameOrNotFound(username);
         user.getWatchlist().remove(movieId);
         return Response.ok("Le film a bien été retiré de votre watchlist", userRepository.save(user));
+    }
+
+    @Transactional
+    public ResponseEntity<Object> addReviewToUser(String username, Review review) {
+        User user = findByUsernameOrNotFound(username);
+
+        if (reviewRepository.existsByUser_IdAndMovieId(user.getId(), review.getMovieId())) {
+            return Response.error("Vous avez déjà ajouté une critique pour ce film !");
+        }
+
+        review.setUser(user);
+        reviewRepository.save(review);
+        return Response.ok("Review successfully added !", review);
     }
 
 
