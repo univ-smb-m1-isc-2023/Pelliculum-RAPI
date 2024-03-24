@@ -67,6 +67,21 @@ public class UserController {
         return userService.getFollowersDetailsByUsername(username);
     }
 
+    @GetMapping("/{username}/watchlist")
+    public ResponseEntity<?> getWatchlist(@PathVariable String username) {
+        return userService.getWatchlist(username);
+    }
+
+    @PostMapping("/{username}/watchlist/{movieId}")
+    public ResponseEntity<?> addMovieToWatchlist(@PathVariable String username, @PathVariable Long movieId) {
+        return userService.addMovieToWatchlist(username, movieId);
+    }
+
+    @DeleteMapping("/{username}/watchlist/{movieId}")
+    public ResponseEntity<?> removeMovieFromWatchlist(@PathVariable String username, @PathVariable Long movieId) {
+        return userService.removeMovieFromWatchlist(username, movieId);
+    }
+
 
 
 }

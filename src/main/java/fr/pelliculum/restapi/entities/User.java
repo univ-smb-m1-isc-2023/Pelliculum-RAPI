@@ -50,6 +50,11 @@ public class User implements UserDetails {
     @ManyToMany
     private List<User> follows;
 
+    // The watchlist of the user, just store the id of the movies
+    @Column(name = "watchlist")
+    @ElementCollection
+    private Set<Long> watchlist;
+
     @Column(name = "profile_picture_path")
     private String profilePicturePath;
 
