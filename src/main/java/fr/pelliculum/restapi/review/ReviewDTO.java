@@ -2,8 +2,6 @@ package fr.pelliculum.restapi.review;
 
 import fr.pelliculum.restapi.entities.Review;
 import fr.pelliculum.restapi.entities.User;
-import fr.pelliculum.restapi.user.UserDTO;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -21,8 +19,9 @@ public class ReviewDTO {
     private User user;
     private Timestamp createdAt;
     private Boolean spoiler;
+    private Integer likes;
 
-    public ReviewDTO(Long id, String comment, Long rating, Long movieId, User user, Timestamp createdAt, Boolean spoiler) {
+    public ReviewDTO(Long id, String comment, Long rating, Long movieId, User user, Timestamp createdAt, Boolean spoiler, Integer likes) {
         this.id = id;
         this.comment = comment;
         this.rating = rating;
@@ -30,6 +29,7 @@ public class ReviewDTO {
         this.user = user;
         this.createdAt = createdAt;
         this.spoiler = spoiler;
+        this.likes = likes;
     }
 
     public ReviewDTO(Review review) {
@@ -39,6 +39,7 @@ public class ReviewDTO {
         this.createdAt = review.getCreatedAt();
         this.id = review.getId();
         this.spoiler = review.isSpoiler();
+        this.likes = review.getLikes().size();
     }
 
 }

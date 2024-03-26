@@ -3,6 +3,7 @@ package fr.pelliculum.restapi.review;
 
 import fr.pelliculum.restapi.configuration.handlers.Response;
 import fr.pelliculum.restapi.entities.Review;
+import fr.pelliculum.restapi.entities.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -74,5 +75,30 @@ public class ReviewService {
 
         reviewRepository.deleteById(reviewId);
         return Response.ok("Review successfully deleted !");
+    }
+
+    /**
+     * Like a review
+     * @param reviewId {@link Long} reviewId
+     * @return {@link Review} review
+     */
+
+    public ResponseEntity<Object> likeReview(String username, Long reviewId) {
+        Optional<Review> reviewOpt = reviewRepository.findById(reviewId);
+
+        if (reviewOpt.isEmpty()) {
+            return Response.error("Review not found !");
+        }
+
+        Review review = reviewOpt.get();
+        User user = review.getUser();
+        if (user.getUsername().equals(username)) {
+            return Response.error("You can't like your own review !");
+        }
+
+        review.getLikes().add(user);
+        reviewRepository.save(review);
+        return Response.ok("Review successfully liked !");
+
     }
 }

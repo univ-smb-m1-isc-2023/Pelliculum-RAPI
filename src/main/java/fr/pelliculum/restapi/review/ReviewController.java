@@ -42,5 +42,10 @@ public class ReviewController {
     public ResponseEntity<?> deleteReview(@PathVariable Long reviewId) {
         return reviewService.deleteReview(reviewId);
     }
+
+    @PostMapping("{reviewId}/like")
+    public ResponseEntity<?> likeReview(@RequestBody String username, @PathVariable Long reviewId) {
+        return reviewService.likeReview(username, reviewId);
+    }
     
 }

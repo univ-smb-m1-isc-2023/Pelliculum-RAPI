@@ -11,6 +11,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
@@ -63,6 +64,10 @@ public class User implements UserDetails {
     @Column(name = "profile_picture_path")
     private String profilePicturePath;
 
+    @Column(name = "liked_reviews")
+    @ManyToMany
+    private List<Review> likedReviews;
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of(new SimpleGrantedAuthority(role.name()));
@@ -96,6 +101,10 @@ public class User implements UserDetails {
     @Override
     public boolean isEnabled() {
         return true;
+    }
+
+    public boolean isLikedReview(Long reviewId) {
+        return reviews.stream().anyMatch(review -> review.getId().equals(reviewId));
     }
 }
 
