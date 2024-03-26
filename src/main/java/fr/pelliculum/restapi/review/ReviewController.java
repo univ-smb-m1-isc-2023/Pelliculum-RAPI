@@ -43,8 +43,8 @@ public class ReviewController {
         return reviewService.deleteReview(reviewId);
     }
 
-    @PostMapping("{reviewId}/like")
-    public ResponseEntity<?> likeReview(@RequestBody String username, @PathVariable Long reviewId) {
+    @PutMapping("like/{reviewId}/{username}")
+    public ResponseEntity<?> likeReview(@PathVariable String username, @PathVariable Long reviewId) {
         return reviewService.likeReview(username, reviewId);
     }
     

@@ -3,7 +3,6 @@ package fr.pelliculum.restapi.review;
 
 import fr.pelliculum.restapi.configuration.handlers.Response;
 import fr.pelliculum.restapi.entities.Review;
-import fr.pelliculum.restapi.entities.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -19,6 +18,7 @@ public class ReviewService {
 
     /**
      * Get all reviews for a film
+     *
      * @param movieId {@link Long} movieId
      * @return {@link List<Review>} reviews
      */
@@ -30,6 +30,7 @@ public class ReviewService {
 
     /**
      * Get all reviews for a user
+     *
      * @param username {@link String} username
      * @return {@link List<Review>} reviews
      */
@@ -40,8 +41,9 @@ public class ReviewService {
 
     /**
      * Update a review
+     *
      * @param reviewId {@link Long} reviewId
-     * @param review {@link Review} review
+     * @param review   {@link Review} review
      * @return {@link Review} review
      */
     public ResponseEntity<Object> updateReview(Long reviewId, Review review) {
@@ -63,6 +65,7 @@ public class ReviewService {
 
     /**
      * Delete a review
+     *
      * @param reviewId {@link Long} reviewId
      * @return {@link Review} review
      */
@@ -79,6 +82,7 @@ public class ReviewService {
 
     /**
      * Like a review
+     * param username {@link String} username
      * @param reviewId {@link Long} reviewId
      * @return {@link Review} review
      */
@@ -91,12 +95,14 @@ public class ReviewService {
         }
 
         Review review = reviewOpt.get();
-        User user = review.getUser();
-        if (user.getUsername().equals(username)) {
+
+
+        if (review.getUser().getUsername().equals(username)) {
             return Response.error("You can't like your own review !");
         }
 
-        review.getLikes().add(user);
+
+        review.getLikes().add(username);
         reviewRepository.save(review);
         return Response.ok("Review successfully liked !");
 
