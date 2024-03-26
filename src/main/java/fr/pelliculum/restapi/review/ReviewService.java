@@ -3,6 +3,8 @@ package fr.pelliculum.restapi.review;
 
 import fr.pelliculum.restapi.configuration.handlers.Response;
 import fr.pelliculum.restapi.entities.Review;
+import fr.pelliculum.restapi.entities.User;
+import fr.pelliculum.restapi.user.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -15,6 +17,7 @@ import java.util.Optional;
 public class ReviewService {
 
     private final ReviewRepository reviewRepository;
+    private final UserService userService;
 
     /**
      * Get all reviews for a film
@@ -101,8 +104,12 @@ public class ReviewService {
             return Response.error("You can't like your own review !");
         }
 
+        User user = userService.findByUsernameOrNotFound(username);
+        if (review.getLikes().contains(user)) {
+            return Response.error("You already liked this review !");
+        }
 
-        review.getLikes().add(username);
+        review.getLikes().add(user);
         reviewRepository.save(review);
         return Response.ok("Review successfully liked !");
 

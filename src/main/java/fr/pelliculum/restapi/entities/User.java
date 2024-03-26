@@ -103,8 +103,5 @@ public class User implements UserDetails {
         return true;
     }
 
-    public boolean isLikedReview(Long reviewId) {
-        return reviews.stream().anyMatch(review -> review.getId().equals(reviewId));
-    }
 }
 

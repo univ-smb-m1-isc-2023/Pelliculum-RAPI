@@ -41,6 +41,6 @@ public class Review {
     @Temporal(TemporalType.TIMESTAMP)
     private Timestamp createdAt = new Timestamp(System.currentTimeMillis());
 
-    @ElementCollection
-    private List<String> likes = new ArrayList<>();
+    @ManyToMany
+    private List<User> likes = new ArrayList<>();
 }
