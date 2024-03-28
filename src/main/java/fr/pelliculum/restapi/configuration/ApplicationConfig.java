@@ -1,6 +1,6 @@
 package fr.pelliculum.restapi.configuration;
 
-import fr.pelliculum.restapi.repositories.UserRepository;
+import fr.pelliculum.restapi.user.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

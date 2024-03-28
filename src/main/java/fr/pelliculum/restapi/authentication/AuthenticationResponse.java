@@ -1,4 +1,4 @@
-package fr.pelliculum.restapi.responses;
+package fr.pelliculum.restapi.authentication;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -12,6 +12,7 @@ import lombok.NoArgsConstructor;
 public class AuthenticationResponse {
 
     private String token;
+    private String username;
 
 
 }
