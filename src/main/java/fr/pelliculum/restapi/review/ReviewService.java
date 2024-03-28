@@ -107,13 +107,11 @@ public class ReviewService {
         User user = userService.findByUsernameOrNotFound(username);
         if (review.getLikes().contains(user)) {
             review.getLikes().remove(user);
-            user.getLikedReviews().remove(review);
             reviewRepository.save(review);
             return Response.ok("Review successfully unliked !");
         }
 
         review.getLikes().add(user);
-        user.getLikedReviews().add(review);
         System.out.println("iciiii getLikes \n");
         System.out.println(review.getLikes() + "\n");
         reviewRepository.save(review);

@@ -64,10 +64,6 @@ public class User implements UserDetails {
     @Column(name = "profile_picture_path")
     private String profilePicturePath;
 
-    @Column(name = "liked_reviews")
-    @ManyToMany
-    private List<Review> likedReviews;
-
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of(new SimpleGrantedAuthority(role.name()));
