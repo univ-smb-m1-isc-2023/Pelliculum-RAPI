@@ -11,10 +11,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import java.util.Calendar;
-import java.util.Collection;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Setter
 @Getter
@@ -60,6 +57,15 @@ public class User implements UserDetails {
     @Column(name = "reviews")
     @ManyToMany
     private List<Review> reviews;
+
+
+    @ManyToMany
+    @JoinTable(
+            name = "user_likes_review",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "review_id")
+    )
+    private Set<Review> likedReviews = new HashSet<>();
 
     @Column(name = "profile_picture_path")
     private String profilePicturePath;

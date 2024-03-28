@@ -18,6 +18,9 @@ public interface UserRepository extends JpaRepository<User, Long>{
     @Query("SELECT new fr.pelliculum.restapi.user.UserDTO(f.lastname, f.firstname, f.username) FROM User u JOIN u.follows f WHERE u.username = :username")
     List<UserDTO> findFollowsByUsername(String username);
 
+    @Query(value = "SELECT u.username FROM users u WHERE id IN (SELECT likes_id FROM review_likes WHERE review_id = :reviewId)", nativeQuery = true)
+    List<String> findUserNamesByReviewIdNative(@Param("reviewId") Long reviewId);
+
     @Query(value = "SELECT u.lastname, u.firstname, u.username, " +
             "(SELECT COUNT(*) FROM users_follows WHERE user_id = f.follows_id) AS followsCount, " +
             "(SELECT COUNT(*) FROM users_follows WHERE follows_id = f.follows_id) AS followersCount " +

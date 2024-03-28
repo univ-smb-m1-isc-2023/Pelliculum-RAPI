@@ -4,6 +4,8 @@ package fr.pelliculum.restapi.review;
 import fr.pelliculum.restapi.configuration.handlers.Response;
 import fr.pelliculum.restapi.entities.Review;
 import fr.pelliculum.restapi.entities.User;
+import fr.pelliculum.restapi.user.UserDTO;
+import fr.pelliculum.restapi.user.UserRepository;
 import fr.pelliculum.restapi.user.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -18,6 +20,7 @@ public class ReviewService {
 
     private final ReviewRepository reviewRepository;
     private final UserService userService;
+    private final UserRepository userRepository;
 
     /**
      * Get all reviews for a film
@@ -28,6 +31,14 @@ public class ReviewService {
 
     public ResponseEntity<Object> getReviewsByMovieId(Long movieId) {
         List<ReviewDTO> reviews = reviewRepository.findReviewDTOsByMovieId(movieId);
+
+        for (ReviewDTO reviewDTO : reviews) {
+            // Hypothétique méthode pour récupérer les UserDTO qui ont aimé cette critique
+            List<String> likes = userRepository.findUserNamesByReviewIdNative(reviewDTO.getId());
+            System.out.println("BONJOUR");
+            System.out.println(likes);
+            reviewDTO.setLikes(likes); // Assurez-vous que ReviewDTO a une méthode pour définir les likes
+        }
         return Response.ok("Reviews for movieId: " + movieId, reviews);
     }
 
