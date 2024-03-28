@@ -67,6 +67,14 @@ public class User implements UserDetails {
     )
     private Set<Review> likedReviews = new HashSet<>();
 
+    @ManyToMany
+    @JoinTable(
+            name = "user_answers_review",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "review_id")
+    )
+    private List<Review> answeredReviews = new ArrayList<>();
+
     @Column(name = "profile_picture_path")
     private String profilePicturePath;
 

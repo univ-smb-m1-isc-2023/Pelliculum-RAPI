@@ -4,12 +4,12 @@ package fr.pelliculum.restapi.review;
 import fr.pelliculum.restapi.configuration.handlers.Response;
 import fr.pelliculum.restapi.entities.Review;
 import fr.pelliculum.restapi.entities.User;
-import fr.pelliculum.restapi.user.UserDTO;
 import fr.pelliculum.restapi.user.UserRepository;
 import fr.pelliculum.restapi.user.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -35,9 +35,11 @@ public class ReviewService {
         for (ReviewDTO reviewDTO : reviews) {
             // Hypothétique méthode pour récupérer les UserDTO qui ont aimé cette critique
             List<String> likes = userRepository.findUserNamesByReviewIdNative(reviewDTO.getId());
-            System.out.println("BONJOUR");
             System.out.println(likes);
             reviewDTO.setLikes(likes); // Assurez-vous que ReviewDTO a une méthode pour définir les likes
+            List<String> answers = userRepository.findAnswersByReviewIdNative(reviewDTO.getId());
+            reviewDTO.setAnswers(answers);
+            System.out.println(answers);
         }
         return Response.ok("Reviews for movieId: " + movieId, reviews);
     }
@@ -110,7 +112,6 @@ public class ReviewService {
 
         Review review = reviewOpt.get();
 
-
         if (review.getUser().getUsername().equals(username)) {
             return Response.error("You can't like your own review !");
         }
@@ -123,10 +124,36 @@ public class ReviewService {
         }
 
         review.getLikes().add(user);
-        System.out.println("iciiii getLikes \n");
-        System.out.println(review.getLikes() + "\n");
         reviewRepository.save(review);
         return Response.ok("Review successfully liked !");
-
     }
+
+    /**
+     * Answer a review
+     * @param username {@link String} username
+     * @param reviewId {@link Long} reviewId
+     * @param answer {@link String} review
+     * @return {@link Review} review
+     */
+
+
+    @Transactional
+    public ResponseEntity<Object> answerReview(String username, Long reviewId, String answer) {
+        Optional<Review> reviewOpt = reviewRepository.findById(reviewId);
+
+        if (reviewOpt.isEmpty()) {
+            return Response.error("Review not found !");
+        }
+
+        Review review = reviewOpt.get();
+        User user = userService.findByUsernameOrNotFound(username);
+        user.getAnsweredReviews().add(review);
+        review.getAnswers().add(answer);
+        reviewRepository.save(review);
+        return Response.ok("Review successfully answered !");
+    }
+
+
+
+
 }

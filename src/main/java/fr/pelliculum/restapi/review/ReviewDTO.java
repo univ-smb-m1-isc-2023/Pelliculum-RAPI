@@ -24,6 +24,7 @@ public class ReviewDTO {
     private Timestamp createdAt;
     private Boolean spoiler;
     private List<String> likes;
+    private List<String> answers;
 
     public ReviewDTO(Long id, String comment, Long rating, Long movieId, User user, Timestamp createdAt, Boolean spoiler) {
         this.id = id;
