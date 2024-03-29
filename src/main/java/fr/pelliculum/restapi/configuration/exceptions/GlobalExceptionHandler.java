@@ -13,4 +13,9 @@ public class GlobalExceptionHandler {
         return Response.error(ex.getMessage());
     }
 
+    @ExceptionHandler(ListNotFoundException.class)
+    public ResponseEntity<Object> handleListNotFoundException(ListNotFoundException ex){
+        return Response.error(ex.getMessage());
+    }
+
 }
