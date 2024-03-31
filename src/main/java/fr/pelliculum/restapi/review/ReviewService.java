@@ -148,12 +148,12 @@ public class ReviewService {
         answer.setUser(user);
 
         Review review = reviewOpt.get();
-        answer.setReviewId(reviewId);
         review.getAnswers().add(answer);
         answerRepository.save(answer);
         return Response.ok("Answer successfully added to review !");
 
     }
+
 
 
 }
