@@ -20,19 +20,18 @@ import java.util.List;
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
-public class Review {
+public class Answer {
 
     @Id
     @GeneratedValue
     private Long id;
 
     private String comment;
-    private Long rating;
 
     private boolean spoiler;
 
-    @Column(name = "movie_id")
-    private Long movieId;
+    @Column(name = "review_id")
+    private Long reviewId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
@@ -44,8 +43,4 @@ public class Review {
     @Column(name = "likes")
     @ManyToMany
     private List<User> likes = new ArrayList<>();
-
-    @Column(name = "answers")
-    @OneToMany
-    private List<Answer> answers = new ArrayList<>();
 }
