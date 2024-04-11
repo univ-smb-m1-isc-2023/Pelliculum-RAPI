@@ -35,6 +35,16 @@ public class AuthenticationService {
     }
 
     /**
+     * Get an user by username or email or throw an exception (404)
+     * @param username {@link String} username
+     * @param email {@link String} email
+     * @return {@link User} user
+     */
+    public User findByUsernameOrEmailOrNotFound(String username, String email) {
+        return userRepository.findByUsernameOrEmail(username, email)
+                .orElseThrow(() -> new UserNotFoundException("User not found with username or email: " + email + username));
+    }
+    /**
      * Register a new user
      *
      * @param request {@link RegisterRequest} request
@@ -68,8 +78,8 @@ public class AuthenticationService {
      */
     public ResponseEntity<?> login(LoginRequest request) {
         try {
-            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword()));
-            final User user = findByUsernameOrNotFound(request.getUsername());
+            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.getUsername() == null ? request.getEmail() : request.getUsername(), request.getPassword()));
+            final User user = findByUsernameOrEmailOrNotFound(request.getUsername(), request.getEmail());
             final String jwt = jwtService.generateToken(user);
             return Response.ok("User successfully logged in !", new AuthenticationResponse(jwt, user.getUsername()));
         } catch (AuthenticationException e) {
