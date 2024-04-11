@@ -19,42 +19,24 @@ public class List {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
+    @Column(name = "movies")
+    @ElementCollection
+    private Set<Long> movies;
+
     @Column(name = "name", nullable = false)
     private String name;
 
     @Column(name = "description")
     private String description;
 
-    @Column(name = "public", nullable = false)
+    @Column(name = "isPublic", nullable = false)
     private Boolean isPublic;
 
     @ManyToOne
-    @JoinColumn(name = "author_id", nullable = false)
-    private User author;
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
 
-    @Column(name = "movies")
-    @ElementCollection
-    private Set<Long> movies;
-
-    @Column(name = "created_at", nullable = false)
-    private Long createdAt;
-
-    @Column(name = "updated_at", nullable = false)
-    private Long updatedAt;
-
-    @PrePersist
-    public void prePersist() {
-        this.createdAt = System.currentTimeMillis();
-        this.updatedAt = System.currentTimeMillis();
-    }
-
-    @PreUpdate
-    public void preUpdate() {
-        this.updatedAt = System.currentTimeMillis();
-    }
-
-
-
-
+    @Column(name = "likes", nullable = false)
+    private Integer likes;
 
 }

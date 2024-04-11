@@ -6,25 +6,35 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
+@RequestMapping("/lists/")
 @RequiredArgsConstructor
-@RequestMapping("/list/")
 public class ListController {
 
     private final ListService listService;
 
-    @GetMapping
-    public ResponseEntity<?> getLists() {
-        return listService.getLists();
-    }
-
     @GetMapping("{id}")
     public ResponseEntity<?> getList(@PathVariable Long id) {
-        return listService.getList(id);
+        return listService.getListById(id);
+    }
+
+    @GetMapping
+    public ResponseEntity<?> getLists(@RequestParam(name = "isPublic", required = false, defaultValue = "false") Boolean isPublic) {
+        return listService.getLists(isPublic);
+    }
+
+    @GetMapping("user/{username}")
+    public ResponseEntity<?> getListsByUsername(@PathVariable String username, @RequestParam(name = "isPublic", required = false, defaultValue = "false") Boolean isPublic) {
+        return listService.getListsByUsername(username, isPublic);
     }
 
     @PostMapping
-    public ResponseEntity<?> createList(@RequestBody List list) {
-        return listService.createList(list);
+    public ResponseEntity<?> createList(@RequestBody String name, @RequestBody String description, @RequestBody Boolean isPublic, @RequestBody Long userId) {
+        return listService.createList(name, description, isPublic, userId);
+    }
+
+    @DeleteMapping("{id}")
+    public ResponseEntity<?> deleteList(@PathVariable Long id) {
+        return listService.deleteList(id);
     }
 
     @PostMapping("{id}/movies/{movieId}")
@@ -37,15 +47,7 @@ public class ListController {
         return listService.removeMovieFromList(id, movieId);
     }
 
-    @DeleteMapping("{id}")
-    public ResponseEntity<?> deleteList(@PathVariable Long id) {
-        return listService.deleteList(id);
-    }
 
-    @PutMapping("{id}")
-    public ResponseEntity<?> updateList(@PathVariable Long id, @RequestBody List list) {
-        return listService.updateList(id, list);
-    }
 
 
 }

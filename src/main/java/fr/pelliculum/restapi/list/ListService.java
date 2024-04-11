@@ -1,9 +1,11 @@
 package fr.pelliculum.restapi.list;
 
+import fr.pelliculum.restapi.configuration.exceptions.ListNotFoundException;
 import fr.pelliculum.restapi.configuration.exceptions.UserNotFoundException;
 import fr.pelliculum.restapi.configuration.handlers.Response;
 import fr.pelliculum.restapi.entities.List;
 import fr.pelliculum.restapi.entities.User;
+import fr.pelliculum.restapi.user.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -13,79 +15,106 @@ import org.springframework.stereotype.Service;
 public class ListService {
 
     private final ListRepository listRepository;
+    private final UserRepository userRepository;
+
 
     /**
      * Get a list by id or throw an exception (404)
-     * @param id {@link Long} list id
+     * @param id {@link Long} id
      * @return {@link List} list
      */
-    public List findListByIdOrNull(Long id) {
+    public List findListByIdOrNotFound(Long id) {
         return listRepository.findById(id)
-                .orElseThrow(() -> new UserNotFoundException("List not found with id: " + id));
+                .orElseThrow(() -> new ListNotFoundException("List not found with id: " + id));
     }
 
-    /**
-     * Get all lists
-     * @return {@link List} lists
-     */
-    public ResponseEntity<?> getLists() {
-        return Response.ok("Lists successfully founded !", listRepository.findAll());
-    }
 
     /**
      * Get a list by id
-     * @param id {@link Long} list id
-     * @return {@link List} list
+     * @param id {@link Long} id
+     * @return {@link ResponseEntity} list
      */
-    public ResponseEntity<?> getList(Long id) {
-        return Response.ok("List successfully founded !", listRepository.findById(id).orElse(null));
+    public ResponseEntity<Object> getListById(Long id) {
+        return Response.ok("List successfully founded !", findListByIdOrNotFound(id));
     }
 
     /**
-     * Create a list
-     * @param list {@link List} list
-     * @return {@link List} list
+     * Get lists
+     * @param isPublic {@link Boolean} isPublic
+     * @return {@link ResponseEntity} lists
      */
-    public ResponseEntity<?> createList(List list) {
-        return Response.ok("List successfully created !", listRepository.save(list));
+    public ResponseEntity<Object> getLists(Boolean isPublic) {
+        return Response.ok("Lists successfully founded !", listRepository.findPublic(isPublic));
+    }
+
+    /**
+     * Get lists by username
+     * @param username {@link String} username
+     * @return {@link ResponseEntity} lists
+     */
+    public ResponseEntity<Object> getListsByUsername(String username, boolean isPublic) {
+        return Response.ok("Lists successfully founded !", listRepository.findByUsername(isPublic, username));
+    }
+
+    /**
+     * Delete a list by id
+     * @param id {@link Long} id
+     * @return {@link ResponseEntity} message
+     */
+    public ResponseEntity<Object> deleteList(Long id) {
+        List list = findListByIdOrNotFound(id);
+        listRepository.deleteById(id);
+        return Response.ok("List successfully deleted !", list);
+    }
+
+
+
+    /**
+     * Create a list
+     * @param name {@link String} name
+     * @param description {@link String} description
+     * @param isPublic {@link Boolean} isPublic
+     * @param userId {@link Long} userId
+     * @return {@link ResponseEntity} list
+     */
+    public ResponseEntity<Object> createList(String name, String description, Boolean isPublic, Long userId) {
+        User user = userRepository.findById(userId).orElse(null);
+        if (user == null) return Response.notFound("User not found with id: " + userId);
+        List list = new List();
+        list.setName(name);
+        list.setDescription(description);
+        list.setIsPublic(isPublic);
+        list.setUser(user);
+        listRepository.save(list);
+        return Response.ok("List successfully created !", list);
     }
 
     /**
      * Add a movie to a list
-     * @param id {@link Long} list id
-     * @param movieId {@link Long} movie id
-     * @return {@link List} list
+     * @param id {@link Long} id
+     * @param movieId {@link Long} movieId
+     * @return {@link ResponseEntity} message
      */
-    public ResponseEntity<?> addMovieToList(Long id, Long movieId) {
-        List list = findListByIdOrNull(id);
+    public ResponseEntity<Object> addMovieToList(Long id, Long movieId) {
+        List list = findListByIdOrNotFound(id);
+        if(list.getMovies().contains(movieId)) return Response.badRequest("Movie already in list !");
         list.getMovies().add(movieId);
-        return Response.ok("Movie successfully added to list !", listRepository.save(list));
+        listRepository.save(list);
+        return Response.ok("Movie successfully added to list !");
     }
 
     /**
      * Remove a movie from a list
-     * @param id {@link Long} list id
-     * @param movieId {@link Long} Movie id
-     * @return
+     * @param id {@link Long} id
+     * @param movieId {@link Long} movieId
+     * @return {@link ResponseEntity} message
      */
-    public ResponseEntity<?> removeMovieFromList(Long id, Long movieId) {
-        List list = findListByIdOrNull(id);
+    public ResponseEntity<Object> removeMovieFromList(Long id, Long movieId) {
+        List list = findListByIdOrNotFound(id);
+        if (!list.getMovies().contains(movieId)) return Response.badRequest("Movie not in list !");
         list.getMovies().remove(movieId);
-        return Response.ok("Movie successfully removed from list !", listRepository.save(list));
+        listRepository.save(list);
+        return Response.ok("Movie successfully removed from list !");
     }
-
-    public ResponseEntity<?> deleteList(Long id) {
-        listRepository.deleteById(id);
-        return Response.ok("List successfully deleted !");
-    }
-
-    public ResponseEntity<?> updateList(Long id, List list) {
-        List listToUpdate = findListByIdOrNull(id);
-        listToUpdate.setName(list.getName());
-        listToUpdate.setDescription(list.getDescription());
-        listToUpdate.setIsPublic(list.getIsPublic());
-        return Response.ok("List successfully updated !", listRepository.save(listToUpdate));
-    }
-
 
 }
