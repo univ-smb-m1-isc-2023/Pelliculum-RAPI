@@ -25,6 +25,7 @@ public class AuthenticationService {
 
     /**
      * Get an user by username or throw an exception (404)
+     *
      * @param username {@link String} username
      * @return {@link User} user
      */
@@ -35,12 +36,13 @@ public class AuthenticationService {
 
     /**
      * Register a new user
+     *
      * @param request {@link RegisterRequest} request
      * @return {@link ResponseEntity} response
      */
-    public ResponseEntity<?> register(RegisterRequest request){
+    public ResponseEntity<?> register(RegisterRequest request) {
 
-        if(userRepository.findByUsername(request.getUsername()).isPresent()){
+        if (userRepository.findByUsername(request.getUsername()).isPresent()) {
             return Response.conflict("Username is already taken !");
         }
 
@@ -60,10 +62,11 @@ public class AuthenticationService {
 
     /**
      * Login a user and generate a token
+     *
      * @param request {@link LoginRequest} request
      * @return {@link AuthenticationResponse} response
      */
-    public ResponseEntity<?> login(LoginRequest request){
+    public ResponseEntity<?> login(LoginRequest request) {
         try {
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword()));
             final User user = findByUsernameOrNotFound(request.getUsername());
@@ -72,6 +75,19 @@ public class AuthenticationService {
         } catch (AuthenticationException e) {
             return Response.error("Mot de passe ou nom d'utilisateur incorrect !");
         }
+    }
+
+    /**
+     * Check if an email exists
+     *
+     * @param email {@link String} email
+     * @return {@link ResponseEntity} response
+     */
+    public ResponseEntity<?> exist(String email) {
+        if (userRepository.findByEmail(email).isEmpty()) {
+            return Response.notFound("Email doesn't exist ! ", false);
+        }
+        return Response.ok("Email exists! ", true);
     }
 
 }

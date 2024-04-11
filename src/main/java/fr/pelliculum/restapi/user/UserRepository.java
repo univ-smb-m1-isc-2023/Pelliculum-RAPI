@@ -12,6 +12,8 @@ public interface UserRepository extends JpaRepository<User, Long>{
 
     Optional<User> findByUsername(String email);
 
+    Optional<User> findByEmail(String email);
+
     @Query("SELECT new fr.pelliculum.restapi.user.UserDTO(u.lastname, u.firstname, u.username) FROM User u JOIN u.follows f WHERE f.username = :username")
     List<UserDTO> findFollowersByUsername(String username);
 
