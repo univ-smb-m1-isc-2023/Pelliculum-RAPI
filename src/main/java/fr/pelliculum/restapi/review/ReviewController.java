@@ -48,6 +48,9 @@ public class ReviewController {
         return reviewService.likeReview(username, reviewId);
     }
 
+    @PostMapping("{username}/answer/{reviewId}")
+    public ResponseEntity<?> answerReview(@PathVariable String username, @PathVariable Long reviewId, @RequestBody String answer) {
+        return reviewService.answerReview(username, reviewId, answer);
+    }
 
-    
 }

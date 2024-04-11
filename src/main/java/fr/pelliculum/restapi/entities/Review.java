@@ -44,4 +44,8 @@ public class Review {
     @Column(name = "likes")
     @ManyToMany
     private List<User> likes = new ArrayList<>();
+
+    @Column(name = "answers")
+    @ElementCollection(targetClass = String.class, fetch = FetchType.EAGER)
+    private List<String> answers = new ArrayList<>();
 }
