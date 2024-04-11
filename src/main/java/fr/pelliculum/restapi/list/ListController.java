@@ -24,11 +24,11 @@ public class ListController {
 
     @GetMapping("user/{username}")
     public ResponseEntity<?> getListsByUsername(@PathVariable String username, @RequestParam(name = "isPublic", required = false, defaultValue = "false") Boolean isPublic) {
-        return listService.getListsByUsername(username);
+        return listService.getListsByUsername(username, isPublic);
     }
 
     @PostMapping
-    public ResponseEntity<?> createList(@RequestBody String name, @RequestBody String description, @RequestBody Boolean isPublic, @RequestBody Long userId, @RequestBody(required = false) Long movieId) {
+    public ResponseEntity<?> createList(@RequestBody String name, @RequestBody String description, @RequestBody Boolean isPublic, @RequestBody Long userId) {
         return listService.createList(name, description, isPublic, userId);
     }
 

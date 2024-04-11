@@ -17,4 +17,7 @@ public interface ListRepository extends JpaRepository<List, Long> {
     @Query("SELECT l FROM List l WHERE l.isPublic = :isPublic")
     Optional<List> findPublic(Boolean isPublic);
 
+    @Query("SELECT l FROM List l WHERE l.isPublic = :isPublic AND l.user.username = :username")
+    Optional<List> findByUsername(Boolean isPublic, String username);
+
 }

@@ -52,9 +52,8 @@ public class ListService {
      * @param username {@link String} username
      * @return {@link ResponseEntity} lists
      */
-    public ResponseEntity<Object> getListsByUsername(String username) {
-        User user = userRepository.findByUsername(username).orElseThrow(() -> new UserNotFoundException("User not found with username: " + username));
-        return Response.ok("Lists successfully founded !", listRepository.findByUserId(Long.valueOf(user.getId())));
+    public ResponseEntity<Object> getListsByUsername(String username, boolean isPublic) {
+        return Response.ok("Lists successfully founded !", listRepository.findByUsername(isPublic, username));
     }
 
     /**
@@ -64,8 +63,8 @@ public class ListService {
      */
     public ResponseEntity<Object> deleteList(Long id) {
         List list = findListByIdOrNotFound(id);
-        listRepository.delete(list);
-        return Response.ok("List successfully deleted !");
+        listRepository.deleteById(id);
+        return Response.ok("List successfully deleted !", list);
     }
 
 
