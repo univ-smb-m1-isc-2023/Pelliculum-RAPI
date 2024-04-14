@@ -46,6 +46,6 @@ public class Review {
     private List<User> likes = new ArrayList<>();
 
     @Column(name = "answers")
-    @OneToMany
+    @OneToMany(mappedBy = "review", cascade = CascadeType.ALL)
     private List<Answer> answers = new ArrayList<>();
 }
