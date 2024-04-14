@@ -40,6 +40,9 @@ public class ReviewService {
             List<String> likes = userRepository.findUserNamesByReviewIdNative(reviewDTO.getId());
             System.out.println(likes);
             reviewDTO.setLikes(likes); // Assurez-vous que ReviewDTO a une méthode pour définir les likes
+            List<String> answers = userRepository.findAnswerByReviewIdNative(reviewDTO.getId());
+            reviewDTO.setAnswers(answers);
+
         }
         return Response.ok("Reviews for movieId: " + movieId, reviews);
     }
@@ -150,6 +153,7 @@ public class ReviewService {
         Review review = reviewOpt.get();
         review.getAnswers().add(answer);
         answerRepository.save(answer);
+        reviewRepository.save(review);
         return Response.ok("Answer successfully added to review !");
 
     }
