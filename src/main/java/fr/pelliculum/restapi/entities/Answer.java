@@ -43,8 +43,4 @@ public class Answer {
     @Column(name = "likes")
     @ManyToMany
     private List<User> likes = new ArrayList<>();
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "review_id", insertable = false, updatable = false)
-    private Review review;
 }
