@@ -27,9 +27,9 @@ public class ListController {
         return listService.getListsByUsername(username, isPublic);
     }
 
-    @PostMapping
-    public ResponseEntity<?> createList(@RequestBody String name, @RequestBody String description, @RequestBody Boolean isPublic, @RequestBody Long userId) {
-        return listService.createList(name, description, isPublic, userId);
+    @PostMapping("")
+    public ResponseEntity<?> createList(@RequestBody ListCreateBody listCreateBody) {
+        return listService.createList(listCreateBody.getName(), listCreateBody.getDescription(), listCreateBody.getIsPublic(), listCreateBody.getUsername());
     }
 
     @DeleteMapping("{id}")

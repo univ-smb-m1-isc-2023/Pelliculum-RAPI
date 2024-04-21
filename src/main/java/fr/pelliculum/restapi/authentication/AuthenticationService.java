@@ -55,7 +55,7 @@ public class AuthenticationService {
 
         userRepository.save(user);
         final String jwt = jwtService.generateToken(user);
-        return Response.ok("User successfully registered !", new AuthenticationResponse(jwt, user.getUsername()));
+        return Response.ok("User successfully registered !", new AuthenticationResponse(jwt, user));
     }
 
     /**
@@ -68,7 +68,7 @@ public class AuthenticationService {
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword()));
             final User user = findByUsernameOrNotFound(request.getUsername());
             final String jwt = jwtService.generateToken(user);
-            return Response.ok("User successfully logged in !", new AuthenticationResponse(jwt, user.getUsername()));
+            return Response.ok("User successfully logged in !", new AuthenticationResponse(jwt, user));
         } catch (AuthenticationException e) {
             return Response.error("Mot de passe ou nom d'utilisateur incorrect !");
         }

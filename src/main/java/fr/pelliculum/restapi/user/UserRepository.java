@@ -5,6 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import javax.swing.text.html.Option;
 import java.util.List;
 import java.util.Optional;
 
@@ -14,6 +15,8 @@ public interface UserRepository extends JpaRepository<User, Long>{
 
     @Query("SELECT new fr.pelliculum.restapi.user.UserDTO(u.lastname, u.firstname, u.username) FROM User u JOIN u.follows f WHERE f.username = :username")
     List<UserDTO> findFollowersByUsername(String username);
+    
+    Optional<User> findByEmail(String email);
 
     @Query("SELECT new fr.pelliculum.restapi.user.UserDTO(f.lastname, f.firstname, f.username) FROM User u JOIN u.follows f WHERE u.username = :username")
     List<UserDTO> findFollowsByUsername(String username);

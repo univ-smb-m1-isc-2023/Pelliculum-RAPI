@@ -53,7 +53,10 @@ public class ListService {
      * @return {@link ResponseEntity} lists
      */
     public ResponseEntity<Object> getListsByUsername(String username, boolean isPublic) {
-        return Response.ok("Lists successfully founded !", listRepository.findByUsername(isPublic, username));
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new UserNotFoundException("User not found with email: " + username));
+        if (user == null) return Response.notFound("User not found with email: " + username);
+        return Response.ok("Lists successfully founded !", listRepository.findByUserId(isPublic, user));
     }
 
     /**
@@ -74,12 +77,13 @@ public class ListService {
      * @param name {@link String} name
      * @param description {@link String} description
      * @param isPublic {@link Boolean} isPublic
-     * @param userId {@link Long} userId
+     * @param username {@link String} email
      * @return {@link ResponseEntity} list
      */
-    public ResponseEntity<Object> createList(String name, String description, Boolean isPublic, Long userId) {
-        User user = userRepository.findById(userId).orElse(null);
-        if (user == null) return Response.notFound("User not found with id: " + userId);
+    public ResponseEntity<Object> createList(String name, String description, Boolean isPublic, String username) {
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new UserNotFoundException("User not found with email: " + username));
+        if (user == null) return Response.notFound("User not found with email: " + username);
         List list = new List();
         list.setName(name);
         list.setDescription(description);
