@@ -1,20 +1,11 @@
 package fr.pelliculum.restapi.review;
 
+import fr.pelliculum.restapi.entities.Answer;
 import fr.pelliculum.restapi.entities.Review;
-import fr.pelliculum.restapi.entities.User;
 import lombok.RequiredArgsConstructor;
-import org.springframework.core.io.Resource;
-import org.springframework.core.io.UrlResource;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.stream.StreamSupport;
 
 @RestController
 @RequiredArgsConstructor
@@ -49,8 +40,8 @@ public class ReviewController {
     }
 
     @PostMapping("{username}/answer/{reviewId}")
-    public ResponseEntity<?> answerReview(@PathVariable String username, @PathVariable Long reviewId, @RequestBody String answer) {
-        return reviewService.answerReview(username, reviewId, answer);
+    public ResponseEntity<?> addAnswerToReview(@PathVariable String username, @PathVariable Long reviewId, @RequestBody Answer answer) {
+        return reviewService.addAnswerToReview(username, reviewId, answer);
     }
 
 }

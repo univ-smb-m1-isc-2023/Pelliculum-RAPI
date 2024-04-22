@@ -1,7 +1,9 @@
 package fr.pelliculum.restapi.review;
 
 
+import fr.pelliculum.restapi.answer.AnswerRepository;
 import fr.pelliculum.restapi.configuration.handlers.Response;
+import fr.pelliculum.restapi.entities.Answer;
 import fr.pelliculum.restapi.entities.Review;
 import fr.pelliculum.restapi.entities.User;
 import fr.pelliculum.restapi.user.UserRepository;
@@ -21,6 +23,7 @@ public class ReviewService {
     private final ReviewRepository reviewRepository;
     private final UserService userService;
     private final UserRepository userRepository;
+    private final AnswerRepository answerRepository;
 
     /**
      * Get all reviews for a film
@@ -37,9 +40,9 @@ public class ReviewService {
             List<String> likes = userRepository.findUserNamesByReviewIdNative(reviewDTO.getId());
             System.out.println(likes);
             reviewDTO.setLikes(likes); // Assurez-vous que ReviewDTO a une méthode pour définir les likes
-            List<String> answers = userRepository.findAnswersByReviewIdNative(reviewDTO.getId());
+            List<String> answers = userRepository.findAnswerByReviewIdNative(reviewDTO.getId());
             reviewDTO.setAnswers(answers);
-            System.out.println(answers);
+
         }
         return Response.ok("Reviews for movieId: " + movieId, reviews);
     }
@@ -129,30 +132,31 @@ public class ReviewService {
     }
 
     /**
-     * Answer a review
-     * @param username {@link String} username
+     * Add an answer to a review
+     *
      * @param reviewId {@link Long} reviewId
-     * @param answer {@link String} review
-     * @return {@link Review} review
+     * @param answer   {@link Answer} answer
+     * @return {@link Answer} answer
      */
 
-
     @Transactional
-    public ResponseEntity<Object> answerReview(String username, Long reviewId, String answer) {
+    public ResponseEntity<Object> addAnswerToReview(String username, Long reviewId, Answer answer) {
         Optional<Review> reviewOpt = reviewRepository.findById(reviewId);
 
         if (reviewOpt.isEmpty()) {
             return Response.error("Review not found !");
         }
 
-        Review review = reviewOpt.get();
         User user = userService.findByUsernameOrNotFound(username);
-        user.getAnsweredReviews().add(review);
-        review.getAnswers().add(answer);
-        reviewRepository.save(review);
-        return Response.ok("Review successfully answered !");
-    }
+        answer.setUser(user);
 
+        Review review = reviewOpt.get();
+        review.getAnswers().add(answer);
+        answerRepository.save(answer);
+        reviewRepository.save(review);
+        return Response.ok("Answer successfully added to review !");
+
+    }
 
 
 

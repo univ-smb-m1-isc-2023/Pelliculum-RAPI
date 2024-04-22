@@ -1,11 +1,13 @@
 C:\Emre\M1\Info803\RestAPI\src\main\java\fr\pelliculum\restapi\review\ReviewDTO.java
 C:\Emre\M1\Info803\RestAPI\src\main\java\fr\pelliculum\restapi\review\ReviewService.java
+C:\Emre\M1\Info803\RestAPI\src\main\java\fr\pelliculum\restapi\entities\Answer.java
 C:\Emre\M1\Info803\RestAPI\src\main\java\fr\pelliculum\restapi\enums\Role.java
 C:\Emre\M1\Info803\RestAPI\src\main\java\fr\pelliculum\restapi\user\UserService.java
 C:\Emre\M1\Info803\RestAPI\src\main\java\fr\pelliculum\restapi\configuration\MvcConfiguration.java
 C:\Emre\M1\Info803\RestAPI\src\main\java\fr\pelliculum\restapi\user\UserDTO.java
 C:\Emre\M1\Info803\RestAPI\src\main\java\fr\pelliculum\restapi\entities\Review.java
 C:\Emre\M1\Info803\RestAPI\src\main\java\fr\pelliculum\restapi\RestApiApplication.java
+C:\Emre\M1\Info803\RestAPI\src\main\java\fr\pelliculum\restapi\answer\AnswerController.java
 C:\Emre\M1\Info803\RestAPI\src\main\java\fr\pelliculum\restapi\authentication\LoginRequest.java
 C:\Emre\M1\Info803\RestAPI\src\main\java\fr\pelliculum\restapi\review\ReviewController.java
 C:\Emre\M1\Info803\RestAPI\src\main\java\fr\pelliculum\restapi\configuration\ApplicationConfig.java
@@ -17,8 +19,11 @@ C:\Emre\M1\Info803\RestAPI\src\main\java\fr\pelliculum\restapi\entities\Movie.ja
 C:\Emre\M1\Info803\RestAPI\src\main\java\fr\pelliculum\restapi\authentication\AuthenticationService.java
 C:\Emre\M1\Info803\RestAPI\src\main\java\fr\pelliculum\restapi\configuration\exceptions\UserNotFoundException.java
 C:\Emre\M1\Info803\RestAPI\src\main\java\fr\pelliculum\restapi\configuration\SecurityConfiguration.java
+C:\Emre\M1\Info803\RestAPI\src\main\java\fr\pelliculum\restapi\answer\AnswerDTO.java
 C:\Emre\M1\Info803\RestAPI\src\main\java\fr\pelliculum\restapi\configuration\exceptions\GlobalExceptionHandler.java
 C:\Emre\M1\Info803\RestAPI\src\main\java\fr\pelliculum\restapi\configuration\handlers\Response.java
+C:\Emre\M1\Info803\RestAPI\src\main\java\fr\pelliculum\restapi\answer\AnswerRepository.java
+C:\Emre\M1\Info803\RestAPI\src\main\java\fr\pelliculum\restapi\answer\AnswerService.java
 C:\Emre\M1\Info803\RestAPI\src\main\java\fr\pelliculum\restapi\review\ReviewRepository.java
 C:\Emre\M1\Info803\RestAPI\src\main\java\fr\pelliculum\restapi\configuration\JwtAuthenticationFilter.java
 C:\Emre\M1\Info803\RestAPI\src\main\java\fr\pelliculum\restapi\user\UserRepository.java

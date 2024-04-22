@@ -1,7 +1,12 @@
 fr\pelliculum\restapi\RestApiApplication.class
+fr\pelliculum\restapi\answer\AnswerRepository.class
 fr\pelliculum\restapi\configuration\JwtAuthenticationFilter.class
 fr\pelliculum\restapi\entities\User$UserBuilder.class
 fr\pelliculum\restapi\enums\Role.class
 fr\pelliculum\restapi\configuration\ApplicationConfig.class
 fr\pelliculum\restapi\entities\User.class
+fr\pelliculum\restapi\answer\AnswerDTO.class
+fr\pelliculum\restapi\entities\Answer.class
+fr\pelliculum\restapi\answer\AnswerController.class
+fr\pelliculum\restapi\answer\AnswerService.class
 fr\pelliculum\restapi\configuration\SecurityConfiguration.class
