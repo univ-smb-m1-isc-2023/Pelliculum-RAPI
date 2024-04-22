@@ -1,12 +1,9 @@
 package fr.pelliculum.restapi.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonInclude;
 import fr.pelliculum.restapi.enums.Role;
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.annotations.Type;
-import org.hibernate.type.descriptor.jdbc.BinaryJdbcType;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -51,7 +48,7 @@ public class User implements UserDetails {
     @JsonIgnore
     @Column(name = "follows")
     @ManyToMany
-    private List<User> follows;
+    private java.util.List<User> follows;
 
     // The watchlist of the user, just store the id of the movies
     @Column(name = "watchlist")
@@ -61,7 +58,7 @@ public class User implements UserDetails {
     @JsonIgnore
     @Column(name = "reviews")
     @ManyToMany
-    private List<Review> reviews;
+    private java.util.List<Review> reviews;
 
 
     @ManyToMany
@@ -78,14 +75,14 @@ public class User implements UserDetails {
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "review_id")
     )
-    private List<Review> answeredReviews = new ArrayList<>();
+    private java.util.List<Review> answeredReviews = new ArrayList<>();
 
     @Column(name = "profile_picture_path")
     private String profilePicturePath;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(new SimpleGrantedAuthority(role.name()));
+        return java.util.List.of(new SimpleGrantedAuthority(role.name()));
     }
 
     @Override
