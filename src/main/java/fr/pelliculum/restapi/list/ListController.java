@@ -17,7 +17,7 @@ public class ListController {
         return listService.getListById(id);
     }
 
-    @GetMapping
+    @GetMapping("")
     public ResponseEntity<?> getLists(@RequestParam(name = "isPublic", required = false, defaultValue = "false") Boolean isPublic) {
         return listService.getLists(isPublic);
     }

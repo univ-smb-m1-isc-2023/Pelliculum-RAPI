@@ -23,16 +23,16 @@ public class List {
     @ElementCollection
     private Set<Long> movies;
 
-    @Column(name = "name", nullable = false)
+    @Column(name = "name", nullable = false, length = 4096)
     private String name;
 
-    @Column(name = "description")
+    @Column(name = "description", nullable = false, columnDefinition = "text")
     private String description;
 
     @Column(name = "isPublic", nullable = false)
     private Boolean isPublic;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
