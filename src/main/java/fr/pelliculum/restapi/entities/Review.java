@@ -12,6 +12,8 @@ import java.sql.Date;
 import java.sql.Time;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Setter
 @Getter
@@ -38,4 +40,12 @@ public class Review {
 
     @Temporal(TemporalType.TIMESTAMP)
     private Timestamp createdAt = new Timestamp(System.currentTimeMillis());
+
+    @Column(name = "likes")
+    @ManyToMany
+    private List<User> likes = new ArrayList<>();
+
+    @Column(name = "answers")
+    @ElementCollection(targetClass = String.class, fetch = FetchType.EAGER)
+    private List<String> answers = new ArrayList<>();
 }

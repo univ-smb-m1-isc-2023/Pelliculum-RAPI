@@ -11,9 +11,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Setter
 @Getter
@@ -65,6 +63,23 @@ public class User implements UserDetails {
     @ManyToMany
     private List<Review> reviews;
 
+
+    @ManyToMany
+    @JoinTable(
+            name = "user_likes_review",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "review_id")
+    )
+    private Set<Review> likedReviews = new HashSet<>();
+
+    @ManyToMany
+    @JoinTable(
+            name = "user_answers_review",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "review_id")
+    )
+    private List<Review> answeredReviews = new ArrayList<>();
+
     @Column(name = "profile_picture_path")
     private String profilePicturePath;
 
@@ -102,5 +117,6 @@ public class User implements UserDetails {
     public boolean isEnabled() {
         return true;
     }
+
 }
 
