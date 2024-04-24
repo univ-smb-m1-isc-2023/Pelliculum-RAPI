@@ -47,6 +47,7 @@ public class UserService {
      * @param username {@link String} username
      * @return {@link User} user
      */
+    @Transactional
     public ResponseEntity<Object> getUserByUsername(String username) {
         return Response.ok("User successfully founded !", findByUsernameOrNotFound(username));
     }
@@ -58,6 +59,7 @@ public class UserService {
      * @param values   {@link User} new values
      * @return {@link User} user
      */
+    @Transactional
     public ResponseEntity<Object> updateUser(String username, User values) {
         User user = findByUsernameOrNotFound(username);
         user.setFirstname(values.getFirstname());
@@ -65,7 +67,7 @@ public class UserService {
         user.setEmail(values.getEmail());
         user.setUsername(values.getUsername());
         userRepository.save(user);
-        return Response.ok("User successfully updated !");
+        return Response.ok("User successfully updated !", user);
     }
 
 
@@ -74,11 +76,13 @@ public class UserService {
      *
      * @param username {@link String} username
      */
+    @Transactional
     public ResponseEntity<Object> updateUserProfilePicture(String username, MultipartFile file) throws IOException {
         try {
             User user = findByUsernameOrNotFound(username);
-            fileStorageService.storeFile(file, username);
-            user.setProfilePicturePath(uploadDir + "/" + username + ".jpeg"); // Assurez-vous que cela correspond à votre logique de résolution de chemin
+            user.setProfilePicture(file.getBytes());
+//            fileStorageService.storeFile(file, username);
+//            user.setProfilePicturePath(uploadDir + "/" + username + ".jpeg"); // Assurez-vous que cela correspond à votre logique de résolution de chemin
             userRepository.save(user);
             return Response.ok("Profile picture successfully updated !", user);
         } catch (IOException e) {
@@ -111,6 +115,7 @@ public class UserService {
                 follow.getLastname(),
                 follow.getFirstname(),
                 follow.getUsername(),
+                follow.getProfilePicture(),
                 ((Number) network.get(0)[0]).longValue(), // followsCount, safe cast to Number then to Long
                 ((Number) network.get(0)[1]).longValue(), // followersCount
                 true // isFollowedByCurrentUser
@@ -141,6 +146,7 @@ public class UserService {
      * @param username {@link String} username
      * @return {@link List} of {@link User} follows
      */
+    @Transactional
     public ResponseEntity<Object> getFollows(String username) {
         return Response.ok("Follows successfully founded !", userRepository.findFollowsByUsername(username));
     }
@@ -161,7 +167,7 @@ public class UserService {
      * @param username {@link String} username
      * @return {@link List} of {@link UserDTO} followsDetails
      */
-
+    @Transactional
     public ResponseEntity<Object> getFollowsDetailsByUsername(String username) {
         List<Object[]> results = userRepository.findFollowsDetailsByUsernameNative(username);
         List<UserDTO> followsDetails = new ArrayList<>();
@@ -170,8 +176,9 @@ public class UserService {
                     (String) result[0], // lastname
                     (String) result[1], // firstname
                     (String) result[2], // username
-                    (Long) result[3],   // followsCount
-                    (Long) result[4],   // followersCount
+                    (byte[]) result[3],  // profilePicture
+                    (Long) result[4],   // followsCount
+                    (Long) result[5],   // followersCount,
                     true // isFollowedByCurrentUser
             ));
         }
@@ -184,6 +191,7 @@ public class UserService {
      * @param username {@link String} username
      * @return {@link List} of {@link UserDTO} followersDetails
      */
+    @Transactional
     public ResponseEntity<Object> getFollowersDetailsByUsername(String username) {
         List<Object[]> results = userRepository.findFollowersDetailsByUsernameNative(username);
         List<UserDTO> followersDetails = new ArrayList<>();
@@ -192,9 +200,10 @@ public class UserService {
                     (String) result[0], // lastname
                     (String) result[1], // firstname
                     (String) result[2], // username
-                    ((Number) result[3]).longValue(), // followsCount, safe cast to Number then to Long
-                    ((Number) result[4]).longValue(),  // followersCount
-                    (Boolean) result[5] // isFollowedByCurrentUser
+                    (byte[]) result[3],  // profilePicture
+                    (Long) result[4],   // followsCount
+                    (Long) result[5],   // followersCount,
+                    (Boolean) result[6] // isFollowedByCurrentUser
             ));
         }
         return Response.ok("Followers details successfully founded !", followersDetails);
