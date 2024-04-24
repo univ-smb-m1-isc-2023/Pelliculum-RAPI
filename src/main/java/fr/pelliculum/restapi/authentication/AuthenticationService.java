@@ -13,6 +13,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -76,6 +77,7 @@ public class AuthenticationService {
      * @param request {@link LoginRequest} request
      * @return {@link AuthenticationResponse} response
      */
+    @Transactional
     public ResponseEntity<?> login(LoginRequest request) {
         try {
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.getUsername() == null ? request.getEmail() : request.getUsername(), request.getPassword()));

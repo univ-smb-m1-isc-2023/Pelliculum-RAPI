@@ -4,10 +4,13 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import fr.pelliculum.restapi.enums.Role;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.annotations.Type;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.sql.Types;
 import java.util.*;
 
 @Setter
@@ -59,6 +62,10 @@ public class User implements UserDetails {
     @Column(name = "reviews")
     @ManyToMany
     private java.util.List<Review> reviews;
+
+    @Lob
+    @Column(name = "profile_picture", length = 1024)
+    private byte[] profilePicture;
 
 
     @ManyToMany

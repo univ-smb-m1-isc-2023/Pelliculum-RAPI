@@ -9,6 +9,7 @@ import fr.pelliculum.restapi.user.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -34,6 +35,7 @@ public class ListService {
      * @param id {@link Long} id
      * @return {@link ResponseEntity} list
      */
+    @Transactional
     public ResponseEntity<Object> getListById(Long id) {
         return Response.ok("List successfully founded !", findListByIdOrNotFound(id));
     }
@@ -43,6 +45,7 @@ public class ListService {
      * @param isPublic {@link Boolean} isPublic
      * @return {@link ResponseEntity} lists
      */
+    @Transactional
     public ResponseEntity<Object> getLists(Boolean isPublic) {
         return Response.ok("Lists successfully founded !", listRepository.findPublic(isPublic));
     }
@@ -52,6 +55,7 @@ public class ListService {
      * @param username {@link String} username
      * @return {@link ResponseEntity} lists
      */
+    @Transactional
     public ResponseEntity<Object> getListsByUsername(String username, boolean isPublic) {
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new UserNotFoundException("User not found with email: " + username));
@@ -80,6 +84,7 @@ public class ListService {
      * @param username {@link String} email
      * @return {@link ResponseEntity} list
      */
+    @Transactional
     public ResponseEntity<Object> createList(String name, String description, Boolean isPublic, String username) {
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new UserNotFoundException("User not found with email: " + username));

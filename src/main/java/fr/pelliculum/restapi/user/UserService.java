@@ -47,6 +47,7 @@ public class UserService {
      * @param username {@link String} username
      * @return {@link User} user
      */
+    @Transactional
     public ResponseEntity<Object> getUserByUsername(String username) {
         return Response.ok("User successfully founded !", findByUsernameOrNotFound(username));
     }
@@ -58,6 +59,7 @@ public class UserService {
      * @param values   {@link User} new values
      * @return {@link User} user
      */
+    @Transactional
     public ResponseEntity<Object> updateUser(String username, User values) {
         User user = findByUsernameOrNotFound(username);
         user.setFirstname(values.getFirstname());
@@ -65,7 +67,7 @@ public class UserService {
         user.setEmail(values.getEmail());
         user.setUsername(values.getUsername());
         userRepository.save(user);
-        return Response.ok("User successfully updated !");
+        return Response.ok("User successfully updated !", user);
     }
 
 
@@ -74,11 +76,13 @@ public class UserService {
      *
      * @param username {@link String} username
      */
+    @Transactional
     public ResponseEntity<Object> updateUserProfilePicture(String username, MultipartFile file) throws IOException {
         try {
             User user = findByUsernameOrNotFound(username);
-            fileStorageService.storeFile(file, username);
-            user.setProfilePicturePath(uploadDir + "/" + username + ".jpeg"); // Assurez-vous que cela correspond à votre logique de résolution de chemin
+            user.setProfilePicture(file.getBytes());
+//            fileStorageService.storeFile(file, username);
+//            user.setProfilePicturePath(uploadDir + "/" + username + ".jpeg"); // Assurez-vous que cela correspond à votre logique de résolution de chemin
             userRepository.save(user);
             return Response.ok("Profile picture successfully updated !", user);
         } catch (IOException e) {
