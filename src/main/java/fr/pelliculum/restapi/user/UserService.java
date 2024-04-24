@@ -174,7 +174,7 @@ public class UserService {
                     (String) result[0], // lastname
                     (String) result[1], // firstname
                     (String) result[2], // username
-                    (Long) result[3],   // followsCount
+                    (Long) result[3]+1,   // followsCount
                     (Long) result[4],   // followersCount
                     true // isFollowedByCurrentUser
             ));
