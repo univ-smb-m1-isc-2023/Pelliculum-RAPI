@@ -17,11 +17,11 @@ public interface UserRepository extends JpaRepository<User, Long>{
 
     Optional<User> findByUsernameOrEmail(String username, String email);
 
-    @Query("SELECT new fr.pelliculum.restapi.user.UserDTO(u.lastname, u.firstname, u.username) FROM User u JOIN u.follows f WHERE f.username = :username")
-    List<UserDTO> findFollowersByUsername(String username);
+    @Query("SELECT u FROM User u JOIN u.follows f WHERE f.username = :username")
+    List<User> findFollowersByUsername(String username);
 
-    @Query("SELECT new fr.pelliculum.restapi.user.UserDTO(f.lastname, f.firstname, f.username) FROM User u JOIN u.follows f WHERE u.username = :username")
-    List<UserDTO> findFollowsByUsername(String username);
+    @Query("SELECT u FROM User u JOIN u.follows f WHERE u.username = :username")
+    List<User> findFollowsByUsername(String username);
 
     @Query(value = "SELECT u.username FROM users u WHERE id IN (SELECT likes_id FROM review_likes WHERE review_id = :reviewId)", nativeQuery = true)
     List<String> findUserNamesByReviewIdNative(@Param("reviewId") Long reviewId);
@@ -29,7 +29,7 @@ public interface UserRepository extends JpaRepository<User, Long>{
     @Query(value = "SELECT answers_id FROM review_answers WHERE review_id = :reviewId", nativeQuery = true)
     List<String> findAnswerByReviewIdNative(@Param("reviewId") Long reviewId);
 
-    @Query(value = "SELECT u.lastname, u.firstname, u.username, " +
+    @Query(value = "SELECT u.lastname, u.firstname, u.username, u.profile_picture, " +
             "(SELECT COUNT(*) FROM users_follows WHERE user_id = f.follows_id) AS followsCount, " +
             "(SELECT COUNT(*) FROM users_follows WHERE follows_id = f.follows_id) AS followersCount " +
             "FROM users u " +
@@ -38,7 +38,7 @@ public interface UserRepository extends JpaRepository<User, Long>{
             nativeQuery = true)
     List<Object[]> findFollowsDetailsByUsernameNative(@Param("username") String username);
 
-    @Query(value = "SELECT u.lastname, u.firstname, u.username, " +
+    @Query(value = "SELECT u.lastname, u.firstname, u.username, u.profile_picture, " +
             "(SELECT COUNT(*) FROM users_follows WHERE user_id = f.follows_id) AS followsCount, " +
             "(SELECT COUNT(*) FROM users_follows WHERE follows_id = f.follows_id) AS followersCount, " +
             "EXISTS(SELECT 1 FROM users_follows uf JOIN users us ON us.id = uf.user_id WHERE uf.follows_id = f.user_id AND us.username = :username) " +
