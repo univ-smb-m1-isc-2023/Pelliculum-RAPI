@@ -27,7 +27,7 @@ public class Review {
     private Long id;
 
     private String comment;
-    private Long rating;
+    private Double rating;
 
     private boolean spoiler;
 
