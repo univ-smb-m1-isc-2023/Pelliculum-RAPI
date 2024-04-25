@@ -65,6 +65,7 @@ public class User implements UserDetails {
 
     @Lob
     @Column(name = "profile_picture", length = 1024)
+    @Basic(fetch = FetchType.LAZY)
     private byte[] profilePicture;
 
 
