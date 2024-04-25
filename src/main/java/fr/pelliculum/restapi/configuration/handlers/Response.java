@@ -21,7 +21,7 @@ public class Response {
             "status", status == null ? HttpStatus.OK.value() : status.value(),
             "data", data == null ? Map.of() : data
         );
-        return new ResponseEntity<Object>(map, status == null ? HttpStatus.OK : status);
+        return new ResponseEntity<>(map, status == null ? HttpStatus.OK : status);
     }
 
     /**

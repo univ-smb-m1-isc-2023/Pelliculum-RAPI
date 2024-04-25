@@ -16,7 +16,9 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -161,6 +163,7 @@ public class UserService {
         return Response.ok("Followers successfully founded !", userRepository.findFollowersByUsername(username));
     }
 
+
     /**
      * Get follows details by username
      *
@@ -170,20 +173,26 @@ public class UserService {
     @Transactional
     public ResponseEntity<Object> getFollowsDetailsByUsername(String username) {
         List<Object[]> results = userRepository.findFollowsDetailsByUsernameNative(username);
-        List<UserDTO> followsDetails = new ArrayList<>();
-        for (Object[] result : results) {
-            followsDetails.add(new UserDTO(
-                    (String) result[0], // lastname
-                    (String) result[1], // firstname
-                    (String) result[2], // username
-                    (byte[]) result[3],  // profilePicture
-                    (Long) result[4],   // followsCount
-                    (Long) result[5],   // followersCount,
-                    true // isFollowedByCurrentUser
-            ));
+
+        // Convert the list of arrays to a list of maps
+        List<Map<String, Object>> resultList = new ArrayList<>();
+        for (Object[] row : results) {
+            Map<String, Object> rowMap = new LinkedHashMap<>();
+            String e = (String) row[0];
+            Long followsCount = ((Number) row[1]).longValue(); // Convertit en Long
+            Long followersCount = ((Number) row[2]).longValue(); // Convertit en Long
+            rowMap.put("followsCount", followsCount);
+            rowMap.put("followersCount", followersCount);
+            User user = findByUsernameOrNotFound(e);
+            rowMap.put("user", user);
+            resultList.add(rowMap);
         }
-        return Response.ok("Follows details successfully founded !", followsDetails);
+
+
+
+        return Response.ok("Follows details successfully founded !", resultList);
     }
+
 
     /**
      * Get followers details by username
@@ -194,19 +203,21 @@ public class UserService {
     @Transactional
     public ResponseEntity<Object> getFollowersDetailsByUsername(String username) {
         List<Object[]> results = userRepository.findFollowersDetailsByUsernameNative(username);
-        List<UserDTO> followersDetails = new ArrayList<>();
-        for (Object[] result : results) {
-            followersDetails.add(new UserDTO(
-                    (String) result[0], // lastname
-                    (String) result[1], // firstname
-                    (String) result[2], // username
-                    (byte[]) result[3],  // profilePicture
-                    (Long) result[4],   // followsCount
-                    (Long) result[5],   // followersCount,
-                    (Boolean) result[6] // isFollowedByCurrentUser
-            ));
+
+        // Convert the list of arrays to a list of maps
+        List<Map<String, Object>> resultList = new ArrayList<>();
+        for (Object[] row : results) {
+            Map<String, Object> rowMap = new LinkedHashMap<>();
+            String e = (String) row[0];
+            Long followsCount = ((Number) row[1]).longValue(); // Convertit en Long
+            Long followersCount = ((Number) row[2]).longValue(); // Convertit en Long
+            rowMap.put("followsCount", followsCount);
+            rowMap.put("followersCount", followersCount);
+            User user = findByUsernameOrNotFound(e);
+            rowMap.put("user", user);
+            resultList.add(rowMap);
         }
-        return Response.ok("Followers details successfully founded !", followersDetails);
+        return Response.ok("Followers details successfully founded !", resultList);
     }
 
 

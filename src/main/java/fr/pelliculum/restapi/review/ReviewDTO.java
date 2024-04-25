@@ -20,18 +20,16 @@ public class ReviewDTO {
     private String comment;
     private Double rating;
     private Long movieId;
-    private User user;
     private Timestamp createdAt;
     private Boolean spoiler;
     private List<String> likes;
     private List<String> answers;
 
-    public ReviewDTO(Long id, String comment, Double rating, Long movieId, User user, Timestamp createdAt, Boolean spoiler) {
+    public ReviewDTO(Long id, String comment, Double rating, Long movieId, Timestamp createdAt, Boolean spoiler) {
         this.id = id;
         this.comment = comment;
         this.rating = rating;
         this.movieId = movieId;
-        this.user = user;
         this.createdAt = createdAt;
         this.spoiler = spoiler;
     }
