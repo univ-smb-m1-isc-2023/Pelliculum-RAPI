@@ -14,7 +14,7 @@ public interface ReviewRepository extends JpaRepository<Review, Long> {
     List<ReviewDTO> findReviewDTOsByMovieId(Long movieId);
 
 
-    @Query("SELECT new fr.pelliculum.restapi.review.ReviewDTO(r.id, r.comment, r.rating, r.movieId, r.createdAt, r.spoiler) FROM Review r WHERE r.user.username = :username")
+    @Query("SELECT new fr.pelliculum.restapi.review.ReviewDTO(r.id, r.comment, r.rating, r.movieId, r.user, r.createdAt, r.spoiler) FROM Review r WHERE r.user.username = :username")
     List<ReviewDTO> findReviewDTOsByUsername(String username);
 
 
