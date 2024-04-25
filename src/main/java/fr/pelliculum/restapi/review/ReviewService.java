@@ -154,7 +154,7 @@ public class ReviewService {
         review.getAnswers().add(answer);
         answerRepository.save(answer);
         reviewRepository.save(review);
-        return Response.ok("Answer successfully added to review !");
+        return Response.ok("Answer successfully added to review !", answer);
 
     }
 

@@ -18,7 +18,7 @@ public class ReviewDTO {
 
     private Long id;
     private String comment;
-    private Long rating;
+    private Double rating;
     private Long movieId;
     private User user;
     private Timestamp createdAt;
@@ -26,7 +26,7 @@ public class ReviewDTO {
     private List<String> likes;
     private List<String> answers;
 
-    public ReviewDTO(Long id, String comment, Long rating, Long movieId, User user, Timestamp createdAt, Boolean spoiler) {
+    public ReviewDTO(Long id, String comment, Double rating, Long movieId, User user, Timestamp createdAt, Boolean spoiler) {
         this.id = id;
         this.comment = comment;
         this.rating = rating;
