@@ -32,6 +32,7 @@ public class SecurityConfiguration {
                 auth.requestMatchers("/auth/**").permitAll()
                     .requestMatchers("/profilePictures/**").permitAll()
                     .requestMatchers("/reviews/**").permitAll()
+                    .requestMatchers("/lists/**").permitAll()
                 .anyRequest().authenticated()
             )
             .sessionManagement(session ->
