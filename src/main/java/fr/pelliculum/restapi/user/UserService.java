@@ -166,6 +166,9 @@ public class UserService {
         Long followersCount = ((Number) network.get(0)[1]).longValue(); // followersCount
         rowMap.put("followsCount", followsCount);
         rowMap.put("followersCount", followersCount);
+        rowMap.put("listCount", listRepository.countByUserId(Long.valueOf(user.getId())));
+        rowMap.put("reviewCount", reviewRepository.countByUserId(Long.valueOf(user.getId())));
+        rowMap.put("likeCount", userRepository.countReviewLikesById(Long.valueOf(user.getId())));
         List<ReviewDTO> reviews = reviewRepository.findReviewDTOsByUsername(username);
         rowMap.put("reviewsCount", reviews.size());
         User userReturn = findByUsernameOrNotFound(followUsername);
