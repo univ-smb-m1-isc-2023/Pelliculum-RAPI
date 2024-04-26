@@ -12,6 +12,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import java.sql.Types;
 import java.util.*;
+import java.util.List;
 
 @Setter
 @Getter
@@ -56,7 +57,7 @@ public class User implements UserDetails {
     // The watchlist of the user, just store the id of the movies
     @Column(name = "watchlist")
     @ElementCollection
-    private Set<Long> watchlist;
+    private List<Long> watchlist = new ArrayList<>();
 
     @JsonIgnore
     @Column(name = "reviews")
