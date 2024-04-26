@@ -8,13 +8,28 @@ import fr.pelliculum.restapi.entities.Review;
 import fr.pelliculum.restapi.entities.User;
 import fr.pelliculum.restapi.review.ReviewRepository;
 import lombok.RequiredArgsConstructor;
+import org.apache.hc.client5.http.classic.methods.HttpPost;
+import org.apache.hc.client5.http.entity.mime.ByteArrayBody;
+import org.apache.hc.client5.http.entity.mime.MultipartEntityBuilder;
+import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
+import org.apache.hc.client5.http.impl.classic.CloseableHttpResponse;
+import org.apache.hc.client5.http.impl.classic.HttpClients;
+import org.apache.hc.core5.http.ContentType;
+import org.apache.hc.core5.http.HttpEntity;
+import org.apache.hc.core5.http.ParseException;
+import org.apache.hc.core5.http.io.entity.EntityUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
 import java.io.IOException;
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -82,11 +97,42 @@ public class UserService {
     public ResponseEntity<Object> updateUserProfilePicture(String username, MultipartFile file) throws IOException {
         try {
             User user = findByUsernameOrNotFound(username);
-            user.setProfilePicture(file.getBytes());
+            // Créez une instance HttpClient
+            // Créez une instance CloseableHttpClient
+            try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
+                // Créez une requête POST
+                HttpPost httpPost = new HttpPost("http://109.122.198.32:3090/profile-picture/" + username);
+
+                // Convertir MultipartFile en byte[]
+                byte[] fileBytes = file.getBytes();
+
+                // Créez une entité multipart/form-data
+                HttpEntity multipartEntity = MultipartEntityBuilder.create()
+                        .addPart("file", new ByteArrayBody(fileBytes, ContentType.DEFAULT_BINARY, file.getOriginalFilename()))
+                        .build();
+
+                // Ajoutez l'entité multipart à la requête POST
+                httpPost.setEntity(multipartEntity);
+
+                // Exécutez la requête et obtenez la réponse
+                try (CloseableHttpResponse response = httpClient.execute(httpPost)) {
+                    // Obtenez le corps de la réponse
+                    HttpEntity responseEntity = response.getEntity();
+                    String responseBody = EntityUtils.toString(responseEntity);
+
+                    // Affichez la réponse
+                    System.out.println("Response: " + responseBody);
+                    user.setProfilePicture("http://109.122.198.32:3090/profilePictures/"+username+".jpeg");
+                    // Libérez les ressources associées à la réponse
+                    EntityUtils.consume(responseEntity);
+                    userRepository.save(user);
+                    return Response.ok("Profile picture successfully updated !", user);
+                } catch (ParseException e) {
+                    throw new RuntimeException(e);
+                }
+            }
 //            fileStorageService.storeFile(file, username);
 //            user.setProfilePicturePath(uploadDir + "/" + username + ".jpeg"); // Assurez-vous que cela correspond à votre logique de résolution de chemin
-            userRepository.save(user);
-            return Response.ok("Profile picture successfully updated !", user);
         } catch (IOException e) {
             return Response.error("Error while updating profile picture : " + e.getMessage());
         }

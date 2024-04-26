@@ -64,12 +64,6 @@ public class User implements UserDetails {
     @ManyToMany
     private java.util.List<Review> reviews;
 
-    @Lob
-    @Column(name = "profile_picture", length = 1024)
-    @Basic(fetch = FetchType.LAZY)
-    private byte[] profilePicture;
-
-
     @ManyToMany
     @JoinTable(
             name = "user_likes_review",
@@ -86,8 +80,8 @@ public class User implements UserDetails {
     )
     private java.util.List<Review> answeredReviews = new ArrayList<>();
 
-    @Column(name = "profile_picture_path")
-    private String profilePicturePath;
+    @Column(name = "profile_picture")
+    private String profilePicture;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

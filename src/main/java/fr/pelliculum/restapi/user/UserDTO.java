@@ -12,7 +12,7 @@ public class UserDTO {
     private String lastname;
     private String firstname;
     private String username;
-    private byte[] profilePicture;
+    private String profilePicture;
     private Long followsCount;
     private Long followersCount;
     private Boolean isFollowed;
