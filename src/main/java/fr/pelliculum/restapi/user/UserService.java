@@ -159,17 +159,17 @@ public class UserService {
 
 
         List<Object[]> network = userRepository.findFollowingAndFollowersByUsername(followUsername);
-        UserDTO followUserDTO = new UserDTO(
-                follow.getLastname(),
-                follow.getFirstname(),
-                follow.getUsername(),
-                follow.getProfilePicture(),
-                ((Number) network.get(0)[0]).longValue(), // followsCount, safe cast to Number then to Long
-                ((Number) network.get(0)[1]).longValue(), // followersCount
-                true // isFollowedByCurrentUser
-        );
 
-        return Response.ok("Vous suivez maintenant " + followUsername + " !", followUserDTO);
+        Map<String, Object> rowMap = new LinkedHashMap<>();
+        Long followsCount = ((Number) network.get(0)[0]).longValue(); // followsCount, safe cast to Number then to Long
+        Long followersCount = ((Number) network.get(0)[1]).longValue(); // followersCount
+        rowMap.put("followsCount", followsCount);
+        rowMap.put("followersCount", followersCount);
+        User userReturn = findByUsernameOrNotFound(followUsername);
+        rowMap.put("user", userReturn);
+
+        return Response.ok("Vous suivez maintenant " + followUsername + " !", rowMap);
+
     }
 
     /**
