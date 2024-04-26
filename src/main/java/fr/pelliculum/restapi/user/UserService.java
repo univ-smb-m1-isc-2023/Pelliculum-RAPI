@@ -6,6 +6,8 @@ import fr.pelliculum.restapi.configuration.handlers.Response;
 import fr.pelliculum.restapi.entities.Movie;
 import fr.pelliculum.restapi.entities.Review;
 import fr.pelliculum.restapi.entities.User;
+import fr.pelliculum.restapi.list.ListRepository;
+import fr.pelliculum.restapi.review.ReviewDTO;
 import fr.pelliculum.restapi.review.ReviewRepository;
 import lombok.RequiredArgsConstructor;
 import org.apache.hc.client5.http.classic.methods.HttpPost;
@@ -30,10 +32,7 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -45,6 +44,8 @@ public class UserService {
     private final UserRepository userRepository;
     private final ReviewRepository reviewRepository;
     private final FileStorageService fileStorageService;
+    private final ListRepository listRepository;
+
 
 
     /**
@@ -165,6 +166,8 @@ public class UserService {
         Long followersCount = ((Number) network.get(0)[1]).longValue(); // followersCount
         rowMap.put("followsCount", followsCount);
         rowMap.put("followersCount", followersCount);
+        List<ReviewDTO> reviews = reviewRepository.findReviewDTOsByUsername(username);
+        rowMap.put("reviewsCount", reviews.size());
         User userReturn = findByUsernameOrNotFound(followUsername);
         rowMap.put("user", userReturn);
 
@@ -220,6 +223,7 @@ public class UserService {
     public ResponseEntity<Object> getFollowsDetailsByUsername(String username) {
         List<Object[]> results = userRepository.findFollowsDetailsByUsernameNative(username);
 
+
         // Convert the list of arrays to a list of maps
         List<Map<String, Object>> resultList = new ArrayList<>();
         for (Object[] row : results) {
@@ -227,6 +231,8 @@ public class UserService {
             String e = (String) row[0];
             Long followsCount = ((Number) row[1]).longValue(); // Convertit en Long
             Long followersCount = ((Number) row[2]).longValue(); // Convertit en Long
+            List<ReviewDTO> reviews = reviewRepository.findReviewDTOsByUsername(e);
+            rowMap.put("reviewsCount", reviews.size());
             rowMap.put("followsCount", followsCount);
             rowMap.put("followersCount", followersCount);
             User user = findByUsernameOrNotFound(e);
@@ -257,6 +263,9 @@ public class UserService {
             String e = (String) row[0];
             Long followsCount = ((Number) row[1]).longValue(); // Convertit en Long
             Long followersCount = ((Number) row[2]).longValue(); // Convertit en Long
+            List<ReviewDTO> reviews = reviewRepository.findReviewDTOsByUsername(e);
+            rowMap.put("reviewsCount", reviews.size());
+
             rowMap.put("followsCount", followsCount);
             rowMap.put("followersCount", followersCount);
             User user = findByUsernameOrNotFound(e);
