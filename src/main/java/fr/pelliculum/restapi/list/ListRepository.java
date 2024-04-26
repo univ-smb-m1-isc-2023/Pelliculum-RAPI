@@ -21,4 +21,7 @@ public interface ListRepository extends JpaRepository<List, Long> {
     @Query("SELECT l FROM List l WHERE l.isPublic = :isPublic AND l.user = :user")
     Optional<java.util.List<List>> findByUserId(boolean isPublic, User user);
 
+    @Query("SELECT COUNT(l) FROM List l WHERE l.user.id = :userId")
+    Optional<Long> countByUserId(Long userId);
+
 }

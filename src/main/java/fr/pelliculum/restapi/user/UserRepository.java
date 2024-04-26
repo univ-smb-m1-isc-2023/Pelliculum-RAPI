@@ -56,4 +56,9 @@ public interface UserRepository extends JpaRepository<User, Long>{
     List<Object[]> findFollowingAndFollowersByUsername(@Param("username") String username);
 
     Boolean existsByEmail(String email);
+
+
+
+    @Query(value = "SELECT COUNT(*) FROM review_likes WHERE likes_id = :userId", nativeQuery = true)
+    Long countReviewLikesById(Long userId);
 }

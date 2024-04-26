@@ -231,11 +231,12 @@ public class UserService {
             String e = (String) row[0];
             Long followsCount = ((Number) row[1]).longValue(); // Convertit en Long
             Long followersCount = ((Number) row[2]).longValue(); // Convertit en Long
-            List<ReviewDTO> reviews = reviewRepository.findReviewDTOsByUsername(e);
-            rowMap.put("reviewsCount", reviews.size());
             rowMap.put("followsCount", followsCount);
             rowMap.put("followersCount", followersCount);
             User user = findByUsernameOrNotFound(e);
+            rowMap.put("listCount", listRepository.countByUserId(Long.valueOf(user.getId())));
+            rowMap.put("reviewCount", reviewRepository.countByUserId(Long.valueOf(user.getId())));
+            rowMap.put("likeCount", userRepository.countReviewLikesById(Long.valueOf(user.getId())));
             rowMap.put("user", user);
             resultList.add(rowMap);
         }
@@ -265,10 +266,12 @@ public class UserService {
             Long followersCount = ((Number) row[2]).longValue(); // Convertit en Long
             List<ReviewDTO> reviews = reviewRepository.findReviewDTOsByUsername(e);
             rowMap.put("reviewsCount", reviews.size());
-
             rowMap.put("followsCount", followsCount);
             rowMap.put("followersCount", followersCount);
             User user = findByUsernameOrNotFound(e);
+            rowMap.put("listCount", listRepository.countByUserId(Long.valueOf(user.getId())));
+            rowMap.put("reviewCount", reviewRepository.countByUserId(Long.valueOf(user.getId())));
+            rowMap.put("likeCount", userRepository.countReviewLikesById(Long.valueOf(user.getId())));
             rowMap.put("user", user);
             resultList.add(rowMap);
         }

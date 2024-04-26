@@ -18,6 +18,10 @@ public interface ReviewRepository extends JpaRepository<Review, Long> {
     List<ReviewDTO> findReviewDTOsByUsername(String username);
 
 
+    @Query("SELECT COUNT(r) FROM Review r WHERE r.user.id = :userId")
+    Long countByUserId(Long userId);
+
+
 
 
 
